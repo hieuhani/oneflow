@@ -19,6 +19,7 @@ import io.ktor.client.statement.*
 import kotlin.test.*
 import io.ktor.server.testing.*
 import vn.periscope.plugins.*
+import vn.periscope.storage.plugins.configureRouting
 
 class ApplicationTest {
     @Test
