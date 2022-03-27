@@ -1,0 +1,27 @@
+version: "3.8"
+
+volumes:
+  postgres_data: { }
+
+networks:
+  default:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.29.0.0/16
+
+services:
+  postgres:
+    image: docker.io/bitnami/postgresql:14
+    ports:
+      - "5432:5432"
+    volumes:
+      - 'postgres_data:/bitnami/postgresql'
+      - '../postgres/init-database.sh:/docker-entrypoint-initdb.d/init-database.sh'
+    environment:
+      - POSTGRESQL_USERNAME=oneflow
+      - POSTGRESQL_DATABASE=oneflow
+      - POSTGRESQL_PASSWORD=secret
+    networks:
+      default:
+        ipv4_address: 172.29.1.10
