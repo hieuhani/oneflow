@@ -7,6 +7,7 @@ import org.koin.dsl.module
 import vn.periscope.id.adapters.api.routes.auth.SignInRoute
 import vn.periscope.id.adapters.api.routes.auth.SignUpRoute
 import vn.periscope.id.adapters.api.routes.healthcheck.HealthCheckRoute
+import vn.periscope.id.adapters.api.routes.user.UserRoute
 import vn.periscope.id.adapters.configs.DatabaseConfig
 import vn.periscope.id.adapters.configs.JWTConfig
 import vn.periscope.id.adapters.persistence.DatabaseConnector
@@ -34,7 +35,7 @@ val adapterModule = module(createdAtStart = true) {
 
     single<JWTService> {
         val jwtConfig = get<JWTConfig>()
-        Auth0JWTService(jwtConfig)
+        Auth0JWTService(jwtConfig, get())
     }
 
     single<DataSource> {
@@ -66,4 +67,6 @@ val adapterModule = module(createdAtStart = true) {
     single { SignInRoute(application = get()) }
 
     single { SignUpRoute(application = get()) }
+
+    single { UserRoute(application = get()) }
 }

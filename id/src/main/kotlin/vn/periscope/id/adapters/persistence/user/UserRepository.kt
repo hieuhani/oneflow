@@ -19,4 +19,8 @@ class UserRepository {
             .map { UserEntity.fromSqlResultRow(it) }
             .firstOrNull()
     }
+
+    fun findById(id: Long): UserEntity {
+        return UserEntity.fromSqlResultRow(UserTable.select { UserTable.id eq id }.single())
+    }
 }

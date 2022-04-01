@@ -4,4 +4,5 @@ import vn.periscope.id.ports.user.models.UserEntry
 
 interface GetUserEntryPort {
     fun findByEmail(email: String): UserEntry?
+    fun findById(id: Long): UserEntry
 }

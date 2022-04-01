@@ -2,14 +2,8 @@ package vn.periscope.id.core
 
 import org.koin.dsl.binds
 import org.koin.dsl.module
-import vn.periscope.id.core.auth.GenerateUserTokenService
-import vn.periscope.id.core.auth.Argon2PasswordService
-import vn.periscope.id.core.auth.SignInUserService
-import vn.periscope.id.core.auth.SignUpUserService
-import vn.periscope.id.ports.auth.GenerateUserTokenUseCase
-import vn.periscope.id.ports.auth.PasswordService
-import vn.periscope.id.ports.auth.SignInUserUseCase
-import vn.periscope.id.ports.auth.SignUpUserUseCase
+import vn.periscope.id.core.auth.*
+import vn.periscope.id.ports.auth.*
 
 val coreModule = module(createdAtStart = true) {
     single {
@@ -21,6 +15,15 @@ val coreModule = module(createdAtStart = true) {
         )
     } binds arrayOf(
         SignInUserUseCase::class,
+    )
+
+    single {
+        GetUserPrincipalService(
+            getUserEntryPort = get(),
+            transactionService = get(),
+        )
+    } binds arrayOf(
+        GetUserPrincipalUseCase::class
     )
 
     single {

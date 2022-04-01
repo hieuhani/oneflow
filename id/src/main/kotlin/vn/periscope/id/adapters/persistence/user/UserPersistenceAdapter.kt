@@ -15,4 +15,8 @@ internal class UserPersistenceAdapter(
     override fun findByEmail(email: String): UserEntry? {
         return userRepository.findByEmail(email)?.toEntry()
     }
+
+    override fun findById(id: Long): UserEntry {
+        return userRepository.findById(id).toEntry()
+    }
 }
