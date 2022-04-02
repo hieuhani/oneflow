@@ -8,14 +8,12 @@ import io.ktor.server.auth.jwt.*
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toJavaInstant
 import vn.periscope.id.adapters.configs.JWTConfig
-import vn.periscope.id.ports.auth.GetUserPrincipalUseCase
 import vn.periscope.id.ports.auth.JWTService
-import vn.periscope.id.ports.auth.models.GetUserPrincipalInput
+import vn.periscope.id.ports.auth.models.UserPrincipal
 import java.util.*
 
 class Auth0JWTService(
     private val jwtConfig: JWTConfig,
-    private val getUserPrincipalUseCase: GetUserPrincipalUseCase,
 ) : JWTService {
     override fun sign(payload: Map<String, Any>): String {
         val jwt = JWT.create()
@@ -52,7 +50,7 @@ class Auth0JWTService(
     override suspend fun validate(credential: JWTCredential): Principal? {
         if (credential.payload.audience.contains(jwtConfig.audience)) {
             val userId = credential.payload.subject.toLong()
-            return getUserPrincipalUseCase.getUserPrincipal(GetUserPrincipalInput(userId))
+            return UserPrincipal(userId)
         }
         return null
     }

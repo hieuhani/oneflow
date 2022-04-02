@@ -18,15 +18,6 @@ val coreModule = module(createdAtStart = true) {
     )
 
     single {
-        GetUserPrincipalService(
-            getUserEntryPort = get(),
-            transactionService = get(),
-        )
-    } binds arrayOf(
-        GetUserPrincipalUseCase::class
-    )
-
-    single {
         Argon2PasswordService()
     } binds arrayOf(
         PasswordService::class,

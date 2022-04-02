@@ -35,7 +35,7 @@ val adapterModule = module(createdAtStart = true) {
 
     single<JWTService> {
         val jwtConfig = get<JWTConfig>()
-        Auth0JWTService(jwtConfig, get())
+        Auth0JWTService(jwtConfig)
     }
 
     single<DataSource> {
