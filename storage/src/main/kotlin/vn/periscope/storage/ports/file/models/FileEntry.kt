@@ -7,8 +7,8 @@ data class FileEntry(
     val fileName: String,
     val filePath: String,
     val ownerId: Long,
+    val serviceName: String,
     val description: String? = null,
-    val serviceName: String? = null,
-    val entityType: String? = null,
-    val entityId: Long? = null,
+    val entityType: String,
+    val entityId: Long,
 )

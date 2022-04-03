@@ -11,6 +11,7 @@ plugins {
     application
     kotlin("jvm") version "1.6.10"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.6.10"
+    id("maven-publish")
 }
 
 group = "vn.periscope"
@@ -25,6 +26,20 @@ application {
 repositories {
     mavenCentral()
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
+}
+
+publishing {
+    repositories {
+        maven {
+            url = uri("file://hieuhani/.m2/repository/")
+        }
+    }
+
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
+    }
 }
 
 dependencies {

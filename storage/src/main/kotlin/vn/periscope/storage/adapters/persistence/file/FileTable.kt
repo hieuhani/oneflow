@@ -9,7 +9,7 @@ object FileTable : LongIdTable(name = "files") {
     val fileName = varchar("file_name", 255)
     val filePath = varchar("file_path", 255)
     val ownerId = long("owner_id")
-    val serviceName = varchar("service_name", 32).nullable()
-    val entityType = varchar("entity_type", 155).nullable()
-    val entityId = long("entity_id").nullable()
+    val serviceName = varchar("service_name", 32)
+    val entityType = varchar("entity_type", 155)
+    val entityId = long("entity_id").default(0)
 }

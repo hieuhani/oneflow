@@ -14,7 +14,6 @@ class UserRoute(application: Application) {
                 get("/me") {
                     val principal = call.principal<UserPrincipal>()
 
-
                     call.respondText("Hehe ${principal!!.userId}")
                 }
             }

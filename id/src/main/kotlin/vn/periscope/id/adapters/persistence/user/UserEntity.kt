@@ -40,8 +40,6 @@ internal fun UserEntity.Companion.fromSqlResultRow(resultRow: ResultRow) = UserE
     password = resultRow[UserTable.password],
 )
 
-
-
 internal fun UserEntity.toEntry() = UserEntry(
     id,
     firstName,

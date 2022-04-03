@@ -8,8 +8,10 @@ import vn.periscope.storage.ports.storage.UploadFileUseCase
 val coreModule = module(createdAtStart = true) {
     single {
         UploadFileService(
+            transactionService = get(),
             minioClient = get(),
             minioConfig = get(),
+            createFileEntryPort = get(),
         )
     } binds arrayOf(
         UploadFileUseCase::class,
