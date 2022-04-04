@@ -2,18 +2,7 @@ package vn.periscope.cms.adapters.persistence.contenttypefield
 
 import org.jetbrains.exposed.dao.id.LongIdTable
 import vn.periscope.cms.adapters.persistence.contenttype.ContentTypeTable
-
-enum class ContentTypeFieldType {
-    UNSPECIFIED,
-    TEXT,
-    BOOLEAN,
-    DATETIME,
-    LINK,
-    EMAIL,
-    GEO_LOCATION,
-    TAXONOMY_TERM,
-    FILE,
-}
+import vn.periscope.cms.ports.contenttypefield.models.ContentTypeFieldType
 
 object ContentTypeFieldTable : LongIdTable("content_type_fields") {
     val label = varchar("label", 255)
