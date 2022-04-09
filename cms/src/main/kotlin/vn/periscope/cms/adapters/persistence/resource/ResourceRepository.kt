@@ -12,8 +12,8 @@ abstract class ResourceRepository<Entry, Entity, ID : Comparable<ID>, Table : Id
     abstract fun toSqlStatement(entry: Entry): Table.(UpdateBuilder<ID>) -> Unit
     abstract fun fromSqlResultRow(resultRow: ResultRow): Entity
 
-    fun get(id: ID): Entity? {
-        return table.select { table.id eq id }.firstOrNull()?.let { fromSqlResultRow(it) }
+    fun get(id: ID): Entity {
+        return table.select { table.id eq id }.first().let { fromSqlResultRow(it) }
     }
 
     fun getAll(): List<Entity> {

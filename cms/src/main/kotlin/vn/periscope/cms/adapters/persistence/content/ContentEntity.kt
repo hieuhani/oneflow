@@ -28,3 +28,7 @@ internal fun ContentEntity.Companion.fromSqlResultRow(resultRow: ResultRow) = Co
     userId = resultRow[ContentTable.userId],
     contentTypeId = resultRow[ContentTable.contentTypeId],
 )
+
+internal fun ContentEntity.toEntry() = ContentEntry(
+    id, title, description, userId, contentTypeId
+)

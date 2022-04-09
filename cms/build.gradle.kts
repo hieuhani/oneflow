@@ -23,11 +23,14 @@ application {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
 }
 
 dependencies {
+    // go to id project > gradle > publishing > publishingToMavenLocal
+    implementation("vn.periscope:id:0.0.1")
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-auth-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-auth-jwt-jvm:$ktor_version")
