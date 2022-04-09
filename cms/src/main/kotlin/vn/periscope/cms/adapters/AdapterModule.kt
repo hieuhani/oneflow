@@ -19,6 +19,9 @@ import javax.sql.DataSource
 
 val adapterModule = module(createdAtStart = true) {
     single {
+        ContentRoute(application = get())
+    }
+    single {
         AppBootstrap(application = get())
     }
 
@@ -59,8 +62,4 @@ val adapterModule = module(createdAtStart = true) {
         GetContentEntryPort::class,
         CreateContentEntryPort::class,
     )
-
-    single {
-        ContentRoute(application = get())
-    }
 }

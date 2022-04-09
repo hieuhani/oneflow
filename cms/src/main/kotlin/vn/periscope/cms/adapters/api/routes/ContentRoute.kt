@@ -22,11 +22,13 @@ class ContentRoute(application: Application) {
                 val contents = getContentsUseCase.getContents()
                 call.respond(contents.map { ContentResponseDto.fromDomainModel(it) })
             }
-            post("/contents") {
-                val principal = call.principal<UserPrincipal>()
-                val request : CreateContentRequestDto = call.receive()
-                val content = createContentUseCase.createContent(request.toDomainModel(principal!!.userId))
-                call.respond(ContentResponseDto.fromDomainModel(content))
+            authenticate {
+                post("/contents") {
+                    val principal = call.principal<UserPrincipal>()
+                    val request : CreateContentRequestDto = call.receive()
+                    val content = createContentUseCase.createContent(request.toDomainModel(principal!!.userId))
+                    call.respond(ContentResponseDto.fromDomainModel(content))
+                }
             }
         }
     }

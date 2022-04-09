@@ -2,7 +2,9 @@ package vn.periscope.cms.core
 
 import org.koin.dsl.binds
 import org.koin.dsl.module
+import vn.periscope.cms.core.content.CreateContentService
 import vn.periscope.cms.core.content.GetContentsService
+import vn.periscope.cms.ports.content.CreateContentUseCase
 import vn.periscope.cms.ports.content.GetContentsUseCase
 
 val coreModule = module(createdAtStart = true) {
@@ -13,5 +15,14 @@ val coreModule = module(createdAtStart = true) {
         )
     } binds arrayOf(
         GetContentsUseCase::class,
+    )
+
+    single {
+        CreateContentService(
+            transactionService = get(),
+            createContentEntryPort = get(),
+        )
+    } binds arrayOf(
+        CreateContentUseCase::class,
     )
 }
