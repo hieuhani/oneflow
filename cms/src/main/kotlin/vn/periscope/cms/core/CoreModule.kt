@@ -82,4 +82,14 @@ val coreModule = module(createdAtStart = true) {
     } binds arrayOf(
         CrudResourceUseCase::class,
     )
+
+    // ContentTypeField
+    single(named("ContentTypeFieldResourceService")) {
+        CrudResourceService<TaxonomyTermEntry, Long>(
+            transactionService = get(),
+            crudResourceEntryPort = get(named("ContentTypeFieldPersistenceAdapter")),
+        )
+    } binds arrayOf(
+        CrudResourceUseCase::class,
+    )
 }

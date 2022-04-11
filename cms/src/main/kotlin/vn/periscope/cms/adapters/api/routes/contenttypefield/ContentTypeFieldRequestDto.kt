@@ -1,20 +1,20 @@
-package vn.periscope.cms.adapters.persistence.contenttypefield
+package vn.periscope.cms.adapters.api.routes.contenttypefield
 
-import vn.periscope.cms.adapters.persistence.resource.ResourceEntity
+import kotlinx.serialization.Serializable
 import vn.periscope.cms.ports.contenttypefield.models.ContentTypeFieldEntry
 import vn.periscope.cms.ports.contenttypefield.models.ContentTypeFieldType
 
-data class ContentTypeFieldEntity(
-    val id: Long? = null,
+@Serializable
+data class ContentTypeFieldRequestDto(
     val label: String,
     val name: String,
     val order: Int,
     val required: Boolean,
     val type: ContentTypeFieldType,
     val contentTypeId: Long,
-) : ResourceEntity<ContentTypeFieldEntry> {
-    override fun toEntry() = ContentTypeFieldEntry(
-        id,
+) {
+    fun toDomainModel() = ContentTypeFieldEntry(
+        id = null,
         label,
         name,
         order,
