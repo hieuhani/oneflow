@@ -8,6 +8,7 @@ import org.koin.dsl.module
 import vn.periscope.cms.adapters.api.routes.ContentRoute
 import vn.periscope.cms.adapters.api.routes.ContentTypeRoute
 import vn.periscope.cms.adapters.api.routes.TaxonomyRoute
+import vn.periscope.cms.adapters.api.routes.contenttypefield.ContentTypeFieldRoute
 import vn.periscope.cms.adapters.api.routes.taxonomyterm.TaxonomyTermRoute
 import vn.periscope.cms.adapters.configs.DatabaseConfig
 import vn.periscope.cms.adapters.persistence.DatabaseConnector
@@ -17,6 +18,9 @@ import vn.periscope.cms.adapters.persistence.content.ContentRepository
 import vn.periscope.cms.adapters.persistence.contenttype.ContentTypeEntity
 import vn.periscope.cms.adapters.persistence.contenttype.ContentTypeRepository
 import vn.periscope.cms.adapters.persistence.contenttype.ContentTypeTable
+import vn.periscope.cms.adapters.persistence.contenttypefield.ContentTypeFieldEntity
+import vn.periscope.cms.adapters.persistence.contenttypefield.ContentTypeFieldRepository
+import vn.periscope.cms.adapters.persistence.contenttypefield.ContentTypeFieldTable
 import vn.periscope.cms.adapters.persistence.resource.ResourcePersistenceAdapter
 import vn.periscope.cms.adapters.persistence.resource.ResourceRepository
 import vn.periscope.cms.adapters.persistence.taxonomy.TaxonomyEntity
@@ -28,6 +32,7 @@ import vn.periscope.cms.adapters.persistence.taxonomyterm.TaxonomyTermTable
 import vn.periscope.cms.ports.TransactionService
 import vn.periscope.cms.ports.content.output.*
 import vn.periscope.cms.ports.contenttype.models.ContentTypeEntry
+import vn.periscope.cms.ports.contenttypefield.models.ContentTypeFieldEntry
 import vn.periscope.cms.ports.resource.output.CrudResourceEntryPort
 import vn.periscope.cms.ports.taxonomy.models.TaxonomyEntry
 import vn.periscope.cms.ports.taxonomyterm.models.TaxonomyTermEntry
@@ -51,6 +56,10 @@ val adapterModule = module(createdAtStart = true) {
 
     single {
         TaxonomyTermRoute(application = get())
+    }
+
+    single {
+        ContentTypeFieldRoute(application = get())
     }
 
     single {
@@ -134,5 +143,15 @@ val adapterModule = module(createdAtStart = true) {
         CrudResourceEntryPort::class,
     )
 
-
+    // ContentTypeField
+    single<ResourceRepository<ContentTypeFieldEntry, ContentTypeFieldEntity, Long, ContentTypeFieldTable>>(named("ContentTypeFieldRepository")) {
+        ContentTypeFieldRepository
+    }
+    single(named("ContentTypeFieldPersistenceAdapter")) {
+        ResourcePersistenceAdapter<ContentTypeFieldEntry, ContentTypeFieldEntity, Long>(
+            resourceRepository = get(named("ContentTypeFieldRepository")),
+        )
+    } binds arrayOf(
+        CrudResourceEntryPort::class,
+    )
 }
