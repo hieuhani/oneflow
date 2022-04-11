@@ -5,13 +5,21 @@ import io.ktor.server.application.*
 import org.koin.dsl.binds
 import org.koin.dsl.module
 import vn.periscope.cms.adapters.api.routes.ContentRoute
+import vn.periscope.cms.adapters.api.routes.TaxonomyRoute
 import vn.periscope.cms.adapters.configs.DatabaseConfig
 import vn.periscope.cms.adapters.persistence.DatabaseConnector
 import vn.periscope.cms.adapters.persistence.ExposedTransactionService
 import vn.periscope.cms.adapters.persistence.content.ContentPersistenceAdapter
 import vn.periscope.cms.adapters.persistence.content.ContentRepository
+import vn.periscope.cms.adapters.persistence.resource.ResourcePersistenceAdapter
+import vn.periscope.cms.adapters.persistence.resource.ResourceRepository
+import vn.periscope.cms.adapters.persistence.taxonomy.TaxonomyEntity
+import vn.periscope.cms.adapters.persistence.taxonomy.TaxonomyRepository
+import vn.periscope.cms.adapters.persistence.taxonomy.TaxonomyTable
 import vn.periscope.cms.ports.TransactionService
 import vn.periscope.cms.ports.content.output.*
+import vn.periscope.cms.ports.resource.output.CrudResourceEntryPort
+import vn.periscope.cms.ports.taxonomy.models.TaxonomyEntry
 import vn.periscope.id.adapters.Auth0JWTService
 import vn.periscope.id.adapters.configs.JWTConfig
 import vn.periscope.id.ports.auth.JWTService
@@ -21,6 +29,9 @@ val adapterModule = module(createdAtStart = true) {
     single {
         ContentRoute(application = get())
     }
+
+
+
     single {
         AppBootstrap(application = get())
     }
@@ -64,4 +75,20 @@ val adapterModule = module(createdAtStart = true) {
         UpdateContentEntryPort::class,
         DeleteContentEntryPort::class,
     )
+
+    single<ResourceRepository<TaxonomyEntry, TaxonomyEntity, Long, TaxonomyTable>> {
+        TaxonomyRepository
+    }
+
+    single {
+        ResourcePersistenceAdapter<TaxonomyEntry, TaxonomyEntity, Long>(
+            resourceRepository = get(),
+        )
+    } binds arrayOf(
+        CrudResourceEntryPort::class,
+    )
+
+    single {
+        TaxonomyRoute(application = get())
+    }
 }

@@ -6,10 +6,13 @@ import vn.periscope.cms.core.content.CreateContentService
 import vn.periscope.cms.core.content.DeleteContentService
 import vn.periscope.cms.core.content.GetContentsService
 import vn.periscope.cms.core.content.UpdateContentService
+import vn.periscope.cms.core.resource.CrudResourceService
 import vn.periscope.cms.ports.content.CreateContentUseCase
 import vn.periscope.cms.ports.content.DeleteContentUseCase
 import vn.periscope.cms.ports.content.GetContentsUseCase
 import vn.periscope.cms.ports.content.UpdateContentUseCase
+import vn.periscope.cms.ports.resource.CrudResourceUseCase
+import vn.periscope.cms.ports.taxonomy.models.TaxonomyEntry
 
 val coreModule = module(createdAtStart = true) {
     single {
@@ -46,5 +49,14 @@ val coreModule = module(createdAtStart = true) {
         )
     } binds arrayOf(
         DeleteContentUseCase::class,
+    )
+
+    single {
+        CrudResourceService<TaxonomyEntry, Long>(
+            transactionService = get(),
+            crudResourceEntryPort = get(),
+        )
+    } binds arrayOf(
+        CrudResourceUseCase::class,
     )
 }
