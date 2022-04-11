@@ -1,6 +1,8 @@
 package vn.periscope
 
 import io.ktor.server.application.*
+import org.koin.dsl.module
+import org.koin.logger.SLF4JLogger
 import vn.periscope.plugins.*
 
 fun main(args: Array<String>): Unit =

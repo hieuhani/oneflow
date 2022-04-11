@@ -31,15 +31,6 @@ val adapterModule = module(createdAtStart = true) {
     }
 
     single {
-        JWTConfig(environment = get<Application>().environment)
-    }
-
-    single<JWTService> {
-        val jwtConfig = get<JWTConfig>()
-        Auth0JWTService(jwtConfig)
-    }
-
-    single {
         StorageConfig(environment = get<Application>().environment)
     }
 
