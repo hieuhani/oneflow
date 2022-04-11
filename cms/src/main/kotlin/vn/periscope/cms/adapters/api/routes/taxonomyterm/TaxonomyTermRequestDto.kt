@@ -1,18 +1,18 @@
-package vn.periscope.cms.adapters.persistence.taxonomyterm
+package vn.periscope.cms.adapters.api.routes.taxonomyterm
 
-import vn.periscope.cms.adapters.persistence.resource.ResourceEntity
+import kotlinx.serialization.Serializable
 import vn.periscope.cms.ports.taxonomyterm.models.TaxonomyTermEntry
 
-data class TaxonomyTermEntity(
-    val id: Long? = null,
+@Serializable
+data class TaxonomyTermRequestDto(
     val name: String,
     val machineName: String,
     val description: String,
     val taxonomyId: Long,
     val parentId: Long? = null,
-) : ResourceEntity<TaxonomyTermEntry> {
-    override fun toEntry() = TaxonomyTermEntry(
-        id,
+) {
+    fun toDomainModel() = TaxonomyTermEntry(
+        id = null,
         name,
         machineName,
         description,

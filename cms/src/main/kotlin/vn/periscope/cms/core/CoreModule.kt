@@ -15,6 +15,7 @@ import vn.periscope.cms.ports.content.UpdateContentUseCase
 import vn.periscope.cms.ports.contenttype.models.ContentTypeEntry
 import vn.periscope.cms.ports.resource.CrudResourceUseCase
 import vn.periscope.cms.ports.taxonomy.models.TaxonomyEntry
+import vn.periscope.cms.ports.taxonomyterm.models.TaxonomyTermEntry
 
 val coreModule = module(createdAtStart = true) {
     single {
@@ -62,10 +63,21 @@ val coreModule = module(createdAtStart = true) {
         CrudResourceUseCase::class,
     )
 
+    // ContentType
     single(named("ContentTypeResourceService")) {
         CrudResourceService<ContentTypeEntry, Long>(
             transactionService = get(),
             crudResourceEntryPort = get(named("ContentTypePersistenceAdapter")),
+        )
+    } binds arrayOf(
+        CrudResourceUseCase::class,
+    )
+
+    // TaxonomyTerm
+    single(named("TaxonomyTermResourceService")) {
+        CrudResourceService<TaxonomyTermEntry, Long>(
+            transactionService = get(),
+            crudResourceEntryPort = get(named("TaxonomyTermPersistenceAdapter")),
         )
     } binds arrayOf(
         CrudResourceUseCase::class,
