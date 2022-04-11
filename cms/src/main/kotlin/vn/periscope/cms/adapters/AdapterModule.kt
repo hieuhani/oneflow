@@ -8,6 +8,7 @@ import org.koin.dsl.module
 import vn.periscope.cms.adapters.api.routes.ContentRoute
 import vn.periscope.cms.adapters.api.routes.ContentTypeRoute
 import vn.periscope.cms.adapters.api.routes.TaxonomyRoute
+import vn.periscope.cms.adapters.api.routes.taxonomyterm.TaxonomyTermRoute
 import vn.periscope.cms.adapters.configs.DatabaseConfig
 import vn.periscope.cms.adapters.persistence.DatabaseConnector
 import vn.periscope.cms.adapters.persistence.ExposedTransactionService
@@ -21,11 +22,15 @@ import vn.periscope.cms.adapters.persistence.resource.ResourceRepository
 import vn.periscope.cms.adapters.persistence.taxonomy.TaxonomyEntity
 import vn.periscope.cms.adapters.persistence.taxonomy.TaxonomyRepository
 import vn.periscope.cms.adapters.persistence.taxonomy.TaxonomyTable
+import vn.periscope.cms.adapters.persistence.taxonomyterm.TaxonomyTermEntity
+import vn.periscope.cms.adapters.persistence.taxonomyterm.TaxonomyTermRepository
+import vn.periscope.cms.adapters.persistence.taxonomyterm.TaxonomyTermTable
 import vn.periscope.cms.ports.TransactionService
 import vn.periscope.cms.ports.content.output.*
 import vn.periscope.cms.ports.contenttype.models.ContentTypeEntry
 import vn.periscope.cms.ports.resource.output.CrudResourceEntryPort
 import vn.periscope.cms.ports.taxonomy.models.TaxonomyEntry
+import vn.periscope.cms.ports.taxonomyterm.models.TaxonomyTermEntry
 import vn.periscope.id.adapters.Auth0JWTService
 import vn.periscope.id.adapters.configs.JWTConfig
 import vn.periscope.id.ports.auth.JWTService
@@ -36,7 +41,17 @@ val adapterModule = module(createdAtStart = true) {
         ContentRoute(application = get())
     }
 
+    single {
+        TaxonomyRoute(application = get())
+    }
 
+    single {
+        ContentTypeRoute(application = get())
+    }
+
+    single {
+        TaxonomyTermRoute(application = get())
+    }
 
     single {
         AppBootstrap(application = get())
@@ -94,10 +109,10 @@ val adapterModule = module(createdAtStart = true) {
         CrudResourceEntryPort::class,
     )
 
+    // ContentType
     single<ResourceRepository<ContentTypeEntry, ContentTypeEntity, Long, ContentTypeTable>>(named("ContentTypeRepository")) {
         ContentTypeRepository
     }
-
     single(named("ContentTypePersistenceAdapter")) {
         ResourcePersistenceAdapter<ContentTypeEntry, ContentTypeEntity, Long>(
             resourceRepository = get(named("ContentTypeRepository")),
@@ -106,11 +121,18 @@ val adapterModule = module(createdAtStart = true) {
         CrudResourceEntryPort::class,
     )
 
-    single {
-        TaxonomyRoute(application = get())
-    }
 
-    single {
-        ContentTypeRoute(application = get())
+    // TaxonomyTerm
+    single<ResourceRepository<TaxonomyTermEntry, TaxonomyTermEntity, Long, TaxonomyTermTable>>(named("TaxonomyTermRepository")) {
+        TaxonomyTermRepository
     }
+    single(named("TaxonomyTermPersistenceAdapter")) {
+        ResourcePersistenceAdapter<TaxonomyTermEntry, TaxonomyTermEntity, Long>(
+            resourceRepository = get(named("TaxonomyTermRepository")),
+        )
+    } binds arrayOf(
+        CrudResourceEntryPort::class,
+    )
+
+
 }

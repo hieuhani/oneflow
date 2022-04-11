@@ -9,5 +9,5 @@ object TaxonomyTermTable : LongIdTable(name = "taxonomy_terms") {
     val machineName = varchar("machine_name", 255).uniqueIndex()
     val description = text("description")
     val taxonomyId = long("taxonomy_id").references(TaxonomyTable.id, onDelete = ReferenceOption.CASCADE)
-    val parentId = long("parent_id").references(TaxonomyTermTable.id)
+    val parentId = long("parent_id").references(TaxonomyTermTable.id).nullable()
 }
