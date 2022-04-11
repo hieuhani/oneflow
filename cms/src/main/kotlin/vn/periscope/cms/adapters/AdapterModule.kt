@@ -2,15 +2,20 @@ package vn.periscope.cms.adapters
 
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.server.application.*
+import org.koin.core.qualifier.named
 import org.koin.dsl.binds
 import org.koin.dsl.module
 import vn.periscope.cms.adapters.api.routes.ContentRoute
+import vn.periscope.cms.adapters.api.routes.ContentTypeRoute
 import vn.periscope.cms.adapters.api.routes.TaxonomyRoute
 import vn.periscope.cms.adapters.configs.DatabaseConfig
 import vn.periscope.cms.adapters.persistence.DatabaseConnector
 import vn.periscope.cms.adapters.persistence.ExposedTransactionService
 import vn.periscope.cms.adapters.persistence.content.ContentPersistenceAdapter
 import vn.periscope.cms.adapters.persistence.content.ContentRepository
+import vn.periscope.cms.adapters.persistence.contenttype.ContentTypeEntity
+import vn.periscope.cms.adapters.persistence.contenttype.ContentTypeRepository
+import vn.periscope.cms.adapters.persistence.contenttype.ContentTypeTable
 import vn.periscope.cms.adapters.persistence.resource.ResourcePersistenceAdapter
 import vn.periscope.cms.adapters.persistence.resource.ResourceRepository
 import vn.periscope.cms.adapters.persistence.taxonomy.TaxonomyEntity
@@ -18,6 +23,7 @@ import vn.periscope.cms.adapters.persistence.taxonomy.TaxonomyRepository
 import vn.periscope.cms.adapters.persistence.taxonomy.TaxonomyTable
 import vn.periscope.cms.ports.TransactionService
 import vn.periscope.cms.ports.content.output.*
+import vn.periscope.cms.ports.contenttype.models.ContentTypeEntry
 import vn.periscope.cms.ports.resource.output.CrudResourceEntryPort
 import vn.periscope.cms.ports.taxonomy.models.TaxonomyEntry
 import vn.periscope.id.adapters.Auth0JWTService
@@ -88,7 +94,23 @@ val adapterModule = module(createdAtStart = true) {
         CrudResourceEntryPort::class,
     )
 
+    single<ResourceRepository<ContentTypeEntry, ContentTypeEntity, Long, ContentTypeTable>>(named("ContentTypeRepository")) {
+        ContentTypeRepository
+    }
+
+    single(named("ContentTypePersistenceAdapter")) {
+        ResourcePersistenceAdapter<ContentTypeEntry, ContentTypeEntity, Long>(
+            resourceRepository = get(named("ContentTypeRepository")),
+        )
+    } binds arrayOf(
+        CrudResourceEntryPort::class,
+    )
+
     single {
         TaxonomyRoute(application = get())
+    }
+
+    single {
+        ContentTypeRoute(application = get())
     }
 }
