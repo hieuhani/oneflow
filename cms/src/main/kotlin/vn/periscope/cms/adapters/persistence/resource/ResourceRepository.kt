@@ -31,4 +31,10 @@ abstract class ResourceRepository<Entry, Entity, ID : Comparable<ID>, Table : Id
         }
         throw RuntimeException("Update failed")
     }
+
+    fun delete(id: ID): Boolean {
+        return table.deleteWhere {
+            table.id eq id
+        } == 1
+    }
 }

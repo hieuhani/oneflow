@@ -1,4 +1,4 @@
-package vn.periscope.cms.ports.content
+package vn.periscope.cms.ports.content.output
 
 import vn.periscope.cms.ports.content.models.ContentEntry
 

@@ -1,7 +1,7 @@
 package vn.periscope.cms.core.content
 
 import vn.periscope.cms.ports.TransactionService
-import vn.periscope.cms.ports.content.CreateContentEntryPort
+import vn.periscope.cms.ports.content.output.CreateContentEntryPort
 import vn.periscope.cms.ports.content.CreateContentUseCase
 import vn.periscope.cms.ports.content.models.ContentEntry
 

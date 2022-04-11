@@ -1,17 +1,15 @@
 package vn.periscope.cms.adapters.persistence.content
 
-import vn.periscope.cms.ports.content.CreateContentEntryPort
-import vn.periscope.cms.ports.content.GetContentEntryPort
-import vn.periscope.cms.ports.content.GetContentsEntryPort
-import vn.periscope.cms.ports.content.UpdateContentEntryPort
 import vn.periscope.cms.ports.content.models.ContentEntry
+import vn.periscope.cms.ports.content.output.*
 
 internal class ContentPersistenceAdapter(
     private val contentRepository: ContentRepository,
 ) : GetContentsEntryPort,
     GetContentEntryPort,
     CreateContentEntryPort,
-    UpdateContentEntryPort {
+    UpdateContentEntryPort,
+    DeleteContentEntryPort {
     override fun findAll(): List<ContentEntry> {
         return contentRepository.getAll().map { it.toEntry() }
     }
@@ -26,5 +24,9 @@ internal class ContentPersistenceAdapter(
 
     override fun update(id: Long, content: ContentEntry): ContentEntry {
         return contentRepository.update(id, content).toEntry()
+    }
+
+    override fun delete(id: Long): Boolean {
+        return contentRepository.delete(id)
     }
 }

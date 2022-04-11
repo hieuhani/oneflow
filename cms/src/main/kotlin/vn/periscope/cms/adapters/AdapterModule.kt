@@ -11,7 +11,7 @@ import vn.periscope.cms.adapters.persistence.ExposedTransactionService
 import vn.periscope.cms.adapters.persistence.content.ContentPersistenceAdapter
 import vn.periscope.cms.adapters.persistence.content.ContentRepository
 import vn.periscope.cms.ports.TransactionService
-import vn.periscope.cms.ports.content.*
+import vn.periscope.cms.ports.content.output.*
 import vn.periscope.id.adapters.Auth0JWTService
 import vn.periscope.id.adapters.configs.JWTConfig
 import vn.periscope.id.ports.auth.JWTService
@@ -62,5 +62,6 @@ val adapterModule = module(createdAtStart = true) {
         GetContentEntryPort::class,
         CreateContentEntryPort::class,
         UpdateContentEntryPort::class,
+        DeleteContentEntryPort::class,
     )
 }

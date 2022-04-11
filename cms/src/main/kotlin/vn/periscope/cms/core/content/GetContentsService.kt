@@ -1,7 +1,7 @@
 package vn.periscope.cms.core.content
 
 import vn.periscope.cms.ports.TransactionService
-import vn.periscope.cms.ports.content.GetContentsEntryPort
+import vn.periscope.cms.ports.content.output.GetContentsEntryPort
 import vn.periscope.cms.ports.content.GetContentsUseCase
 import vn.periscope.cms.ports.content.models.ContentEntry
 
