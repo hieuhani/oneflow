@@ -16,7 +16,7 @@ data class ContentResponseDto(
                 id = id!!,
                 title,
                 description,
-                userId,
+                userId = userId!!,
                 contentTypeId,
             )
         }

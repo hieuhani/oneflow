@@ -9,7 +9,7 @@ data class CreateContentRequestDto(
     val description: String,
     val contentTypeId: Long,
 ) {
-    fun toDomainModel(userId: Long) = ContentEntry(
+    fun toDomainModel(userId: Long?) = ContentEntry(
         id = null,
         title,
         description,

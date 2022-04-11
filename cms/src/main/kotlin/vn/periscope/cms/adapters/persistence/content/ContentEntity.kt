@@ -17,7 +17,9 @@ data class ContentEntity(
 internal fun ContentEntry.toCreateSqlStatement(statement: InsertStatement<Number>) = statement.let {
     it[ContentTable.title] = title
     it[ContentTable.description] = description
-    it[ContentTable.userId] = userId
+    if (userId != null) {
+        it[ContentTable.userId] = userId
+    }
     it[ContentTable.contentTypeId] = contentTypeId
 }
 

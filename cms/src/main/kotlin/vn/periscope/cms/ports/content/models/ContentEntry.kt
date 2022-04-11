@@ -4,6 +4,6 @@ data class ContentEntry(
     val id: Long? = null,
     val title: String,
     val description: String,
-    val userId: Long,
+    val userId: Long? = null,
     val contentTypeId: Long,
 )

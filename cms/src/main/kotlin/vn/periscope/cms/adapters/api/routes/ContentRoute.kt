@@ -8,13 +8,16 @@ import io.ktor.server.routing.*
 import vn.periscope.cms.adapters.api.routes.dto.ContentResponseDto
 import vn.periscope.cms.adapters.api.routes.dto.CreateContentRequestDto
 import vn.periscope.cms.extensions.inject
+import vn.periscope.cms.extensions.longParameter
 import vn.periscope.cms.ports.content.CreateContentUseCase
 import vn.periscope.cms.ports.content.GetContentsUseCase
+import vn.periscope.cms.ports.content.UpdateContentUseCase
 import vn.periscope.id.ports.auth.models.UserPrincipal
 
 class ContentRoute(application: Application) {
     private val getContentsUseCase by inject<GetContentsUseCase>()
     private val createContentUseCase by inject<CreateContentUseCase>()
+    private val updateContentUseCase by inject<UpdateContentUseCase>()
 
     init {
         application.routing {
@@ -25,8 +28,15 @@ class ContentRoute(application: Application) {
             authenticate {
                 post("/contents") {
                     val principal = call.principal<UserPrincipal>()
-                    val request : CreateContentRequestDto = call.receive()
+                    val request: CreateContentRequestDto = call.receive()
                     val content = createContentUseCase.createContent(request.toDomainModel(principal!!.userId))
+                    call.respond(ContentResponseDto.fromDomainModel(content))
+                }
+
+                put("/contents/{id}") {
+                    val id = call.longParameter("id")
+                    val request: CreateContentRequestDto = call.receive()
+                    val content = updateContentUseCase.updateContent(id, request.toDomainModel(null))
                     call.respond(ContentResponseDto.fromDomainModel(content))
                 }
             }

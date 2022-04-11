@@ -61,5 +61,6 @@ val adapterModule = module(createdAtStart = true) {
         GetContentsEntryPort::class,
         GetContentEntryPort::class,
         CreateContentEntryPort::class,
+        UpdateContentEntryPort::class,
     )
 }

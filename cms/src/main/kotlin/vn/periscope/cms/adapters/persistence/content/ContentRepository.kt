@@ -2,6 +2,7 @@ package vn.periscope.cms.adapters.persistence.content
 
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.statements.InsertStatement
+import org.jetbrains.exposed.sql.statements.UpdateStatement
 import vn.periscope.cms.adapters.persistence.resource.ResourceRepository
 import vn.periscope.cms.ports.content.models.ContentEntry
 
@@ -19,7 +20,15 @@ object ContentRepository : ResourceRepository<ContentEntry, ContentEntity, Long,
     override fun toInsertStatement(entry: ContentEntry): ContentTable.(InsertStatement<Number>) -> Unit = {
         it[title] = entry.title
         it[description] = entry.description
-        it[userId] = entry.userId
+        if (entry.userId != null) {
+            it[userId] = entry.userId
+        }
+        it[contentTypeId] = entry.contentTypeId
+    }
+
+    override fun toUpdateStatement(entry: ContentEntry): ContentTable.(UpdateStatement) -> Unit = {
+        it[title] = entry.title
+        it[description] = entry.description
         it[contentTypeId] = entry.contentTypeId
     }
 }
