@@ -68,5 +68,7 @@ val adapterModule = module(createdAtStart = true) {
 
     single { SignUpRoute(application = get()) }
 
-    single { UserRoute(application = get()) }
+    single {
+        UserRoute(application = get())
+    }
 }
