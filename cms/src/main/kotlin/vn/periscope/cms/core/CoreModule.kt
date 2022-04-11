@@ -1,5 +1,6 @@
 package vn.periscope.cms.core
 
+import org.koin.core.qualifier.named
 import org.koin.dsl.binds
 import org.koin.dsl.module
 import vn.periscope.cms.core.content.CreateContentService
@@ -11,6 +12,7 @@ import vn.periscope.cms.ports.content.CreateContentUseCase
 import vn.periscope.cms.ports.content.DeleteContentUseCase
 import vn.periscope.cms.ports.content.GetContentsUseCase
 import vn.periscope.cms.ports.content.UpdateContentUseCase
+import vn.periscope.cms.ports.contenttype.models.ContentTypeEntry
 import vn.periscope.cms.ports.resource.CrudResourceUseCase
 import vn.periscope.cms.ports.taxonomy.models.TaxonomyEntry
 
@@ -55,6 +57,15 @@ val coreModule = module(createdAtStart = true) {
         CrudResourceService<TaxonomyEntry, Long>(
             transactionService = get(),
             crudResourceEntryPort = get(),
+        )
+    } binds arrayOf(
+        CrudResourceUseCase::class,
+    )
+
+    single(named("ContentTypeResourceService")) {
+        CrudResourceService<ContentTypeEntry, Long>(
+            transactionService = get(),
+            crudResourceEntryPort = get(named("ContentTypePersistenceAdapter")),
         )
     } binds arrayOf(
         CrudResourceUseCase::class,
