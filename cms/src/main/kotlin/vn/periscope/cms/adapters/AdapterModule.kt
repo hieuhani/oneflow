@@ -15,6 +15,9 @@ import vn.periscope.cms.adapters.persistence.DatabaseConnector
 import vn.periscope.cms.adapters.persistence.ExposedTransactionService
 import vn.periscope.cms.adapters.persistence.content.ContentPersistenceAdapter
 import vn.periscope.cms.adapters.persistence.content.ContentRepository
+import vn.periscope.cms.adapters.persistence.contentfieldvalue.ContentFieldValueEntity
+import vn.periscope.cms.adapters.persistence.contentfieldvalue.ContentFieldValueRepository
+import vn.periscope.cms.adapters.persistence.contentfieldvalue.ContentFieldValueTable
 import vn.periscope.cms.adapters.persistence.contenttype.ContentTypeEntity
 import vn.periscope.cms.adapters.persistence.contenttype.ContentTypeRepository
 import vn.periscope.cms.adapters.persistence.contenttype.ContentTypeTable
@@ -31,6 +34,7 @@ import vn.periscope.cms.adapters.persistence.taxonomyterm.TaxonomyTermRepository
 import vn.periscope.cms.adapters.persistence.taxonomyterm.TaxonomyTermTable
 import vn.periscope.cms.ports.TransactionService
 import vn.periscope.cms.ports.content.output.*
+import vn.periscope.cms.ports.contentfieldvalue.models.ContentFieldValueEntry
 import vn.periscope.cms.ports.contenttype.models.ContentTypeEntry
 import vn.periscope.cms.ports.contenttypefield.models.ContentTypeFieldEntry
 import vn.periscope.cms.ports.resource.output.CrudResourceEntryPort
@@ -150,6 +154,18 @@ val adapterModule = module(createdAtStart = true) {
     single(named("ContentTypeFieldPersistenceAdapter")) {
         ResourcePersistenceAdapter<ContentTypeFieldEntry, ContentTypeFieldEntity, Long>(
             resourceRepository = get(named("ContentTypeFieldRepository")),
+        )
+    } binds arrayOf(
+        CrudResourceEntryPort::class,
+    )
+
+    // ContentFieldValue
+    single<ResourceRepository<ContentFieldValueEntry, ContentFieldValueEntity, Long, ContentFieldValueTable>>(named("ContentFieldValueRepository")) {
+        ContentFieldValueRepository
+    }
+    single(named("ContentFieldValuePersistenceAdapter")) {
+        ResourcePersistenceAdapter<ContentFieldValueEntry, ContentFieldValueEntity, Long>(
+            resourceRepository = get(named("ContentFieldValueRepository")),
         )
     } binds arrayOf(
         CrudResourceEntryPort::class,

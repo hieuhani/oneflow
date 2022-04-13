@@ -12,6 +12,7 @@ import vn.periscope.cms.ports.content.CreateContentUseCase
 import vn.periscope.cms.ports.content.DeleteContentUseCase
 import vn.periscope.cms.ports.content.GetContentsUseCase
 import vn.periscope.cms.ports.content.UpdateContentUseCase
+import vn.periscope.cms.ports.contentfieldvalue.models.ContentFieldValueEntry
 import vn.periscope.cms.ports.contenttype.models.ContentTypeEntry
 import vn.periscope.cms.ports.resource.CrudResourceUseCase
 import vn.periscope.cms.ports.taxonomy.models.TaxonomyEntry
@@ -88,6 +89,16 @@ val coreModule = module(createdAtStart = true) {
         CrudResourceService<TaxonomyTermEntry, Long>(
             transactionService = get(),
             crudResourceEntryPort = get(named("ContentTypeFieldPersistenceAdapter")),
+        )
+    } binds arrayOf(
+        CrudResourceUseCase::class,
+    )
+
+    // ContentFieldValue
+    single(named("ContentFieldValueResourceService")) {
+        CrudResourceService<ContentFieldValueEntry, Long>(
+            transactionService = get(),
+            crudResourceEntryPort = get(named("ContentFieldValuePersistenceAdapter")),
         )
     } binds arrayOf(
         CrudResourceUseCase::class,
