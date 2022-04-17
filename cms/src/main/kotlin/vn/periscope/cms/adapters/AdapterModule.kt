@@ -8,6 +8,7 @@ import org.koin.dsl.module
 import vn.periscope.cms.adapters.api.routes.ContentRoute
 import vn.periscope.cms.adapters.api.routes.ContentTypeRoute
 import vn.periscope.cms.adapters.api.routes.TaxonomyRoute
+import vn.periscope.cms.adapters.api.routes.contentfieldvalue.ContentFieldValueRoute
 import vn.periscope.cms.adapters.api.routes.contenttypefield.ContentTypeFieldRoute
 import vn.periscope.cms.adapters.api.routes.taxonomyterm.TaxonomyTermRoute
 import vn.periscope.cms.adapters.configs.DatabaseConfig
@@ -65,6 +66,7 @@ val adapterModule = module(createdAtStart = true) {
     single {
         ContentTypeFieldRoute(application = get())
     }
+
 
     single {
         AppBootstrap(application = get())
@@ -170,4 +172,8 @@ val adapterModule = module(createdAtStart = true) {
     } binds arrayOf(
         CrudResourceEntryPort::class,
     )
+
+    single {
+        ContentFieldValueRoute(application = get())
+    }
 }
