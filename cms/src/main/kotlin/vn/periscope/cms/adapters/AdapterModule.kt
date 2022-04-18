@@ -64,11 +64,6 @@ val adapterModule = module(createdAtStart = true) {
     }
 
     single {
-        ContentTypeFieldRoute(application = get())
-    }
-
-
-    single {
         AppBootstrap(application = get())
     }
 
@@ -175,5 +170,9 @@ val adapterModule = module(createdAtStart = true) {
 
     single {
         ContentFieldValueRoute(application = get())
+    }
+
+    single {
+        ContentTypeFieldRoute(application = get())
     }
 }
