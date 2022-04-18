@@ -1,6 +1,14 @@
 package vn.periscope.adapters.persistence
 
 import kotlinx.coroutines.runBlocking
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.Transaction
+import org.jetbrains.exposed.sql.transactions.TransactionManager
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.transactions.experimental.suspendedTransaction
+import org.jetbrains.exposed.sql.transactions.transaction
+import vn.periscope.adapters.persistence.product.ProductTable
 import javax.sql.DataSource
 
 class DatabaseConnector(
@@ -8,8 +16,7 @@ class DatabaseConnector(
 ) {
     private val db: Database = Database.connect(datasource = dataSource)
     private val tables = arrayOf(
-        UserTable,
-        BusinessTable,
+        ProductTable,
     )
 
     init {
