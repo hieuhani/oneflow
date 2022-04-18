@@ -8,5 +8,6 @@ class JWTConfig(
     private val jwtConfig = environment.config.config("jwt")
     val audience = jwtConfig.property("audience").getString()
     val realm = jwtConfig.property("realm").getString()
-    val secret = jwtConfig.property("secret").getString()
+    val publicKey = jwtConfig.property("publicKey").getString()
+    val privateKey = jwtConfig.propertyOrNull("privateKey")?.getString()
 }
