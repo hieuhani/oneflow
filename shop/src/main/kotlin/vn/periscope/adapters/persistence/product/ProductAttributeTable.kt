@@ -7,7 +7,7 @@ object ProductAttributeTable : LongIdTable(name = "product_attribute") {
     val businessId = long("business_id")
     val productId = long("product_id")
     val name = varchar("name", 32)
-    val values = text("values")
+    val values = varchar("values", 512)
     val createdAt = timestamp("created_at")
     val updatedAt = timestamp("updated_at")
 }

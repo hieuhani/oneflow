@@ -2,7 +2,7 @@ package vn.periscope.adapters.persistence.product
 
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.statements.InsertStatement
-import vn.periscope.ports.product.models.Product
+import vn.periscope.ports.product.models.ProductAttribute
 import java.time.Instant
 
 data class ProductAttributeEntity(
@@ -29,28 +29,28 @@ internal fun ProductAttributeEntity.toCreateSqlStatement(statement: InsertStatem
 }
 
 internal fun ProductAttributeEntity.Companion.fromSqlResultRow(resultRow: ResultRow) = ProductAttributeEntity(
-    id = resultRow[ProductTable.id].value,
-    businessId = resultRow[ProductTable.businessId],
-    taxonomy = resultRow[ProductTable.taxonomy],
-    managementMethodology = resultRow[ProductTable.managementMethodology],
-    code = resultRow[ProductTable.code],
-    name = resultRow[ProductTable.name],
-    brandId = resultRow[ProductTable.brandId],
-    industryId = resultRow[ProductTable.industryId],
-    createdAt = resultRow[ProductTable.createdAt],
-    updatedAt = resultRow[ProductTable.updatedAt],
+    id = resultRow[ProductAttributeTable.id].value,
+    businessId = resultRow[ProductAttributeTable.businessId],
+    productId = resultRow[ProductAttributeTable.productId],
+    name = resultRow[ProductAttributeTable.name],
+    values = convertStringToSet(resultRow[ProductAttributeTable.values]),
+    createdAt = resultRow[ProductAttributeTable.createdAt],
+    updatedAt = resultRow[ProductAttributeTable.updatedAt]
 )
+
+fun convertStringToSet(values: String): Set<String> {
+    if (values.isBlank()) {
+        return emptySet()
+    }
+    return values.split(SEPARATOR).toSet()
+}
 
 internal fun ProductAttributeEntity.toEntry() = ProductAttribute(
     id,
     businessId,
-    Product.ProductTaxonomy.valueOf(taxonomy.name),
-    Product.ProductManagementMethodology.valueOf(taxonomy.name),
-    code,
+    productId,
     name,
-    brandId,
-    industryId,
-    null,
+    values,
     createdAt,
     updatedAt
 )

@@ -5,12 +5,12 @@ import vn.periscope.ports.product.models.Product
 
 class ProductPersistenceAdapter(
     private val productRepository: ProductRepository,
-) : GetProductEntryPoint,
-    CreateProductEntryPoint,
-    UpdateProductEntryPoint,
-    DeleteProductEntryPoint,
-    FilterProductEntryPoint,
-    SearchProductEntryPoint {
+) : GetProductEntryPort,
+    CreateProductEntryPort,
+    UpdateProductEntryPort,
+    DeleteProductEntryPort,
+    FilterProductEntryPort,
+    SearchProductEntryPort {
     override fun filter(): List<Product> {
         return productRepository.getAll().map { it.toEntry() }
     }

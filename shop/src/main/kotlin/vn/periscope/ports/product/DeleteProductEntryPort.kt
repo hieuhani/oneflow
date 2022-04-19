@@ -1,5 +1,5 @@
 package vn.periscope.ports.product
 
-interface DeleteProductEntryPoint {
+interface DeleteProductEntryPort {
     fun delete(id: Long): Boolean
 }

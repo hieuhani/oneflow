@@ -11,7 +11,9 @@ data class Product(
     val name: String,
     val brandId: Long,
     val industryId: Long,
-    val gallery: Gallery? = null,
+    val categoryIds: List<Long>,
+    val gallery: List<Gallery>,
+    val attributes: List<ProductAttribute>,
     val createdAt: Instant,
     val updatedAt: Instant
 ) {
