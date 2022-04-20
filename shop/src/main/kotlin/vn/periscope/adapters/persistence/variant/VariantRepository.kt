@@ -18,8 +18,6 @@ object VariantRepository : ResourceRepository<Variant, VariantEntity, Long, Vari
         barcode = resultRow[VariantTable.barcode],
         qrcode = resultRow[VariantTable.qrcode],
         status = resultRow[VariantTable.status],
-        sellable = resultRow[VariantTable.sellable],
-        taxable = resultRow[VariantTable.taxable],
         createdAt = resultRow[VariantTable.createdAt],
         updatedAt = resultRow[VariantTable.updatedAt],
     )
@@ -32,8 +30,6 @@ object VariantRepository : ResourceRepository<Variant, VariantEntity, Long, Vari
         it[barcode] = entry.barcode
         it[qrcode] = entry.qrcode
         it[status] = VariantStatus.valueOf(entry.status.name)
-        it[sellable] = entry.sellable
-        it[taxable] = entry.taxable
         it[createdAt] = entry.createdAt
         it[updatedAt] = entry.updatedAt
     }
@@ -44,8 +40,6 @@ object VariantRepository : ResourceRepository<Variant, VariantEntity, Long, Vari
         it[barcode] = entry.barcode
         it[qrcode] = entry.qrcode
         it[status] = VariantStatus.valueOf(entry.status.name)
-        it[sellable] = entry.sellable
-        it[taxable] = entry.taxable
         it[updatedAt] = entry.updatedAt
     }
 }

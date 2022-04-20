@@ -1,7 +1,7 @@
 package vn.periscope.adapters.persistence.product
 
-import vn.periscope.ports.product.*
-import vn.periscope.ports.product.models.Product
+import vn.periscope.ports.product.models.ProductEntry
+import vn.periscope.ports.product.out.*
 
 class ProductPersistenceAdapter(
     private val productRepository: ProductRepository,
@@ -11,24 +11,24 @@ class ProductPersistenceAdapter(
     DeleteProductEntryPort,
     FilterProductEntryPort,
     SearchProductEntryPort {
-    override fun filter(): List<Product> {
+    override fun filter(): List<ProductEntry> {
         return productRepository.getAll().map { it.toEntry() }
     }
 
-    override fun search(): List<Product> {
+    override fun search(): List<ProductEntry> {
         return productRepository.getAll().map { it.toEntry() }
     }
 
-    override fun findById(id: Long): Product {
+    override fun findById(id: Long): ProductEntry {
         return productRepository.get(id).toEntry()
     }
 
-    override fun create(product: Product): Product {
-        return productRepository.create(product).toEntry()
+    override fun create(productEntry: ProductEntry): ProductEntry {
+        return productRepository.create(productEntry).toEntry()
     }
 
-    override fun update(id: Long, product: Product): Product {
-        return productRepository.update(id, product).toEntry()
+    override fun update(id: Long, productEntry: ProductEntry): ProductEntry {
+        return productRepository.update(id, productEntry).toEntry()
     }
 
     override fun delete(id: Long): Boolean {

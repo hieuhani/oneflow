@@ -2,7 +2,7 @@ package vn.periscope.adapters.persistence.product
 
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.statements.InsertStatement
-import vn.periscope.ports.product.models.Product
+import vn.periscope.ports.product.models.ProductEntry
 import java.time.Instant
 
 data class ProductEntity(
@@ -45,16 +45,18 @@ internal fun ProductEntity.Companion.fromSqlResultRow(resultRow: ResultRow) = Pr
     updatedAt = resultRow[ProductTable.updatedAt],
 )
 
-internal fun ProductEntity.toEntry() = Product(
+internal fun ProductEntity.toEntry() = ProductEntry(
     id,
     businessId,
-    Product.ProductTaxonomy.valueOf(taxonomy.name),
-    Product.ProductManagementMethodology.valueOf(taxonomy.name),
+    ProductEntry.ProductTaxonomy.valueOf(taxonomy.name),
+    ProductEntry.ProductManagementMethodology.valueOf(taxonomy.name),
     code,
     name,
     brandId,
     industryId,
-    null,
+    listOf(),
+    listOf(),
+    listOf(),
     createdAt,
     updatedAt
 )

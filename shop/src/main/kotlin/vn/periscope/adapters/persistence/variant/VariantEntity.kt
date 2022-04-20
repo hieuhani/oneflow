@@ -14,8 +14,6 @@ data class VariantEntity(
     val barcode: String,
     val qrcode: String,
     val status: VariantStatus,
-    val sellable: Boolean,
-    val taxable: Boolean,
     val createdAt: Instant,
     val updatedAt: Instant
 ) {
@@ -30,8 +28,6 @@ internal fun VariantEntity.toCreateSqlStatement(statement: InsertStatement<Numbe
     it[VariantTable.barcode] = barcode
     it[VariantTable.qrcode] = qrcode
     it[VariantTable.status] = status
-    it[VariantTable.sellable] = sellable
-    it[VariantTable.taxable] = taxable
     it[VariantTable.createdAt] = createdAt
     it[VariantTable.updatedAt] = updatedAt
 }
@@ -45,8 +41,6 @@ internal fun VariantEntity.Companion.fromSqlResultRow(resultRow: ResultRow) = Va
     barcode = resultRow[VariantTable.barcode],
     qrcode = resultRow[VariantTable.qrcode],
     status = resultRow[VariantTable.status],
-    sellable = resultRow[VariantTable.sellable],
-    taxable = resultRow[VariantTable.taxable],
     createdAt = resultRow[VariantTable.createdAt],
     updatedAt = resultRow[VariantTable.updatedAt],
 )
@@ -60,8 +54,6 @@ internal fun VariantEntity.toEntry() = Variant(
     barcode,
     qrcode,
     Variant.VariantStatus.valueOf(status.name),
-    sellable,
-    taxable,
     listOf(),
     createdAt,
     updatedAt

@@ -1,7 +1,7 @@
 package vn.periscope.adapters.persistence.variant
 
-import vn.periscope.ports.variant.*
 import vn.periscope.ports.variant.models.Variant
+import vn.periscope.ports.variant.out.*
 
 class VariantPersistenceAdapter(
     private val variantRepository: VariantRepository,

@@ -4,9 +4,9 @@ import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.statements.UpdateStatement
 import vn.periscope.adapters.persistence.resource.ResourceRepository
-import vn.periscope.ports.product.models.Product
+import vn.periscope.ports.product.models.ProductEntry
 
-object ProductRepository : ResourceRepository<Product, ProductEntity, Long, ProductTable>() {
+object ProductRepository : ResourceRepository<ProductEntry, ProductEntity, Long, ProductTable>() {
     override val table = ProductTable
 
     override fun fromSqlResultRow(resultRow: ResultRow) = ProductEntity(
@@ -22,7 +22,7 @@ object ProductRepository : ResourceRepository<Product, ProductEntity, Long, Prod
         updatedAt = resultRow[ProductTable.updatedAt],
     )
 
-    override fun toInsertStatement(entry: Product): ProductTable.(InsertStatement<Number>) -> Unit = {
+    override fun toInsertStatement(entry: ProductEntry): ProductTable.(InsertStatement<Number>) -> Unit = {
         it[businessId] = entry.businessId
         it[taxonomy] = ProductTaxonomy.valueOf(entry.taxonomy.name)
         it[managementMethodology] = ProductManagementMethodology.valueOf(entry.managementMethodology.name)
@@ -34,7 +34,7 @@ object ProductRepository : ResourceRepository<Product, ProductEntity, Long, Prod
         it[updatedAt] = entry.updatedAt
     }
 
-    override fun toUpdateStatement(entry: Product): ProductTable.(UpdateStatement) -> Unit = {
+    override fun toUpdateStatement(entry: ProductEntry): ProductTable.(UpdateStatement) -> Unit = {
         it[brandId] = entry.brandId
         it[industryId] = entry.industryId
         it[updatedAt] = entry.updatedAt

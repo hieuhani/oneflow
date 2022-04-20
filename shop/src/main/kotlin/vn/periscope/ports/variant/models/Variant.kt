@@ -1,6 +1,6 @@
 package vn.periscope.ports.variant.models
 
-import vn.periscope.ports.product.models.Gallery
+import vn.periscope.ports.gallery.models.GalleryEntry
 import java.time.Instant
 
 data class Variant(
@@ -12,9 +12,7 @@ data class Variant(
     val barcode: String,
     val qrcode: String,
     val status: VariantStatus,
-    val sellable: Boolean,
-    val taxable: Boolean,
-    val galleries: List<Gallery>,
+    val galleries: List<GalleryEntry>,
     val createdAt: Instant,
     val updatedAt: Instant
 ) {

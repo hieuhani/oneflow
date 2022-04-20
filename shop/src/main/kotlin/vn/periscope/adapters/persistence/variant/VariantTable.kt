@@ -12,8 +12,6 @@ object VariantTable : LongIdTable(name = "product") {
     val barcode = varchar("barcode", 32)
     val qrcode = varchar("qrcode", 32)
     val status = enumerationByName("status", 32, VariantStatus::class)
-    val sellable = bool("sellable")
-    val taxable = bool("taxable")
     val createdAt = timestamp("created_at")
     val updatedAt = timestamp("updated_at")
 }
