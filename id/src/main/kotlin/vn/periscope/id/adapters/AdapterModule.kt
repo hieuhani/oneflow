@@ -12,10 +12,13 @@ import vn.periscope.id.adapters.configs.DatabaseConfig
 import vn.periscope.id.adapters.configs.JWTConfig
 import vn.periscope.id.adapters.persistence.DatabaseConnector
 import vn.periscope.id.adapters.persistence.ExposedTransactionService
+import vn.periscope.id.adapters.persistence.session.SessionPersistenceAdapter
+import vn.periscope.id.adapters.persistence.session.SessionRepository
 import vn.periscope.id.adapters.persistence.user.UserPersistenceAdapter
 import vn.periscope.id.adapters.persistence.user.UserRepository
 import vn.periscope.id.ports.TransactionService
 import vn.periscope.id.ports.auth.JWTService
+import vn.periscope.id.ports.session.CreateSessionEntryPort
 import vn.periscope.id.ports.user.CreateUserEntryPort
 import vn.periscope.id.ports.user.GetUserEntryPort
 import javax.sql.DataSource
@@ -56,10 +59,20 @@ val adapterModule = module(createdAtStart = true) {
     }
 
     single {
+        SessionRepository()
+    }
+
+    single {
         UserPersistenceAdapter(userRepository = get())
     } binds arrayOf(
         CreateUserEntryPort::class,
         GetUserEntryPort::class,
+    )
+
+    single {
+        SessionPersistenceAdapter(sessionRepository = get())
+    } binds arrayOf(
+        CreateSessionEntryPort::class,
     )
 
     single { HealthCheckRoute(application = get()) }

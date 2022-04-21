@@ -11,6 +11,7 @@ class GenerateUserTokenService(
         return jwtService.sign(
             hashMapOf(
                 "sub" to payload.subject,
+                "sid" to payload.sessionId,
                 "exp" to payload.expiresAt,
             )
         )
