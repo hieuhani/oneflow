@@ -5,13 +5,13 @@ import kotlinx.serialization.Serializable
 import vn.periscope.id.ports.auth.models.AuthOutput
 
 @Serializable
-data class AuthResponseDto(
+data class AuthResponse(
     val accessToken: String,
     val refreshToken: String,
     val session: Session,
 ) {
     companion object {
-        fun fromDomainModel(output: AuthOutput) = AuthResponseDto(
+        fun fromDomainModel(output: AuthOutput) = AuthResponse(
             accessToken = output.accessToken,
             refreshToken = output.refreshToken,
             session = Session.fromDomainModel(output.session),

@@ -4,7 +4,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import vn.periscope.id.adapters.api.routes.auth.dto.AuthResponseDto
+import vn.periscope.id.adapters.api.routes.auth.dto.AuthResponse
 import vn.periscope.id.adapters.api.routes.auth.dto.SignInRequestDto
 import vn.periscope.id.adapters.api.routes.auth.dto.toDomainModel
 import vn.periscope.id.extentions.inject
@@ -18,7 +18,7 @@ class SignInRoute(application: Application) {
                 post {
                     val signInRequest: SignInRequestDto = call.receive()
                     val entry = signInUserUseCase.signInByEmail(signInRequest.toDomainModel())
-                    val response = AuthResponseDto.fromDomainModel(entry)
+                    val response = AuthResponse.fromDomainModel(entry)
                     call.respond(response)
                 }
             }
