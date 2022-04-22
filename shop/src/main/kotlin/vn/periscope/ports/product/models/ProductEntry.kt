@@ -6,8 +6,8 @@ import java.time.Instant
 data class ProductEntry(
     val id: Long? = null,
     val businessId: Long,
-    val taxonomy: ProductTaxonomy,
-    val managementMethodology: ProductManagementMethodology,
+    val taxonomy: Taxonomy,
+    val managementMethodology: ManagementMethodology,
     val code: String,
     val name: String,
     val brandId: Long,
@@ -19,13 +19,13 @@ data class ProductEntry(
     val updatedAt: Instant
 ) {
 
-    enum class ProductTaxonomy(description: String) {
+    enum class Taxonomy(description: String) {
         SERVICE(""),
         PHYSICAL(""),
         DIGITAL_GOODS("")
     }
 
-    enum class ProductManagementMethodology(description: String) {
+    enum class ManagementMethodology(description: String) {
         SERIAL("SERIAL"),
         LOTS_DATE("LOTS_DATE"),
         NORMAL("NORMAL")

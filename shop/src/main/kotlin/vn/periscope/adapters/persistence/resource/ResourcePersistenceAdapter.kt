@@ -18,15 +18,11 @@ internal class ResourcePersistenceAdapter<Entry, Entity: ResourceEntity<Entry>, 
         return resourceRepository.update(id, resource).toEntry()
     }
 
-    override suspend fun getById(id: ID): Entry {
+    override suspend fun findById(id: ID): Entry {
         return resourceRepository.get(id).toEntry()
     }
 
-    override suspend fun filter(): List<Entry> {
-        return resourceRepository.getAll().map { it.toEntry() }
-    }
-
-    override suspend fun search(): List<Entry> {
-        return resourceRepository.getAll().map { it.toEntry() }
+    override suspend fun findAll(): List<Entry> {
+        TODO("Not yet implemented")
     }
 }

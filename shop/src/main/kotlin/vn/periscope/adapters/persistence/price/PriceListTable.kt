@@ -1,9 +1,9 @@
-package vn.periscope.adapters.persistence.price.table
+package vn.periscope.adapters.persistence.price
 
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.javatime.timestamp
-import vn.periscope.adapters.persistence.price.enumerate.PriceListStatus
-import vn.periscope.adapters.persistence.price.enumerate.PriceListType
+import vn.periscope.adapters.persistence.price.PriceListStatus
+import vn.periscope.adapters.persistence.price.PriceListType
 import java.time.Instant
 
 object PriceListTable : LongIdTable("price_list") {

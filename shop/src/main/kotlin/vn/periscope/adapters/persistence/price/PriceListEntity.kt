@@ -1,10 +1,7 @@
-package vn.periscope.adapters.persistence.price.entity
+package vn.periscope.adapters.persistence.price
 
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.statements.InsertStatement
-import vn.periscope.adapters.persistence.price.enumerate.PriceListStatus
-import vn.periscope.adapters.persistence.price.enumerate.PriceListType
-import vn.periscope.adapters.persistence.price.table.PriceListTable
 import vn.periscope.ports.price.models.PriceListEntry
 import java.time.Instant
 

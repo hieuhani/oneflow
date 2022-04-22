@@ -48,8 +48,8 @@ internal fun ProductEntity.Companion.fromSqlResultRow(resultRow: ResultRow) = Pr
 internal fun ProductEntity.toEntry() = ProductEntry(
     id,
     businessId,
-    ProductEntry.ProductTaxonomy.valueOf(taxonomy.name),
-    ProductEntry.ProductManagementMethodology.valueOf(taxonomy.name),
+    ProductEntry.Taxonomy.valueOf(taxonomy.name),
+    ProductEntry.ManagementMethodology.valueOf(taxonomy.name),
     code,
     name,
     brandId,

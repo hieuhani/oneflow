@@ -1,7 +1,5 @@
 package vn.periscope.adapters.persistence.price
 
-import vn.periscope.adapters.persistence.price.entity.toEntry
-import vn.periscope.adapters.persistence.price.repository.PriceListRepository
 import vn.periscope.ports.price.models.PriceListEntry
 import vn.periscope.ports.price.out.*
 
