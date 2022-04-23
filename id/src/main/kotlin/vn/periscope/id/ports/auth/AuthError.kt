@@ -21,4 +21,9 @@ sealed class AuthError(
         400_003,
         "Wrong email or password"
     )
+
+    object InvalidRefreshToken : AuthError(
+        400_004,
+        "Invalid refresh token"
+    )
 }
