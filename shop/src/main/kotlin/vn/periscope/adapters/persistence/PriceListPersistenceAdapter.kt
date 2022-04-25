@@ -1,7 +1,8 @@
 package vn.periscope.adapters.persistence
 
 import vn.periscope.adapters.persistence.repository.PriceListRepository
-import vn.periscope.ports.price.models.PriceListEntry
+import vn.periscope.ports.models.PriceListEntry
+import vn.periscope.ports.out.*
 import vn.periscope.ports.price.out.*
 
 class PriceListPersistenceAdapter(

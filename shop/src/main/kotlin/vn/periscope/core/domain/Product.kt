@@ -6,20 +6,20 @@ import vn.periscope.share.statics.ProductManagementMethodology
 import vn.periscope.share.statics.ProductTaxonomy
 import java.util.*
 
-class Product internal constructor(
-    var id: Long,
-    var nid: UUID,
-    var businessId: Long,
-    var taxonomy: ProductTaxonomy,
-    var managementMethodology: ProductManagementMethodology,
-    var name: String,
-    var brandId: Long,
-    var industryId: Long,
-    var categoryIds: Set<Long>,
-    var galleries: List<Gallery>,
-    var attributes: List<ProductAttribute>,
-    var createdAt: Instant,
-    var updatedAt: Instant
+data class Product(
+    val id: Long,
+    val nid: UUID,
+    val businessId: Long,
+    val taxonomy: ProductTaxonomy,
+    val managementMethodology: ProductManagementMethodology,
+    val name: String,
+    val brandId: Long? = 0,
+    val industryId: Long? = 0,
+    val categoryIds: Set<Long>? = setOf(),
+    val galleries: List<Gallery>? = listOf(),
+    val attributes: List<ProductAttribute>? = listOf(),
+    val createdAt: Instant,
+    var updatedAt: Instant,
 ) {
     val removeGalleries: List<Gallery> = listOf()
     val removeAttributes: List<ProductAttribute> = listOf()
@@ -34,9 +34,7 @@ class Product internal constructor(
     }
 
     fun removeAll() {
-        this.removeGalleries.toMutableList().addAll(galleries)
-        this.galleries.toMutableList().removeAll(galleries)
-        modify()
+
     }
 
     fun removeGallery(galleryId: Long) {

@@ -1,14 +1,5 @@
 package vn.periscope.adapters.persistence.repository
 
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.statements.InsertStatement
-import org.jetbrains.exposed.sql.statements.UpdateStatement
-import org.jetbrains.exposed.sql.update
-import vn.periscope.adapters.persistence.dao.VariantEntity
-import vn.periscope.adapters.persistence.dao.VariantTable
-import vn.periscope.ports.product.models.Variant
-
 object VariantRepository {
 //    override val table = VariantTable
 //

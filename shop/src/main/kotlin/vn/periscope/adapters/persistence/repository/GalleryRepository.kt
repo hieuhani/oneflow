@@ -5,10 +5,9 @@ import org.jetbrains.exposed.sql.andWhere
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.statements.UpdateStatement
-import vn.periscope.adapters.persistence.dao.GalleryEntity
-import vn.periscope.adapters.persistence.dao.GalleryTable
-import vn.periscope.adapters.persistence.resource.ResourceRepository
-import vn.periscope.ports.product.models.GalleryEntry
+import vn.periscope.adapters.persistence.entity.GalleryEntity
+import vn.periscope.adapters.persistence.entity.GalleryTable
+import vn.periscope.ports.models.GalleryEntry
 import vn.periscope.share.statics.GalleryTargetObjectType
 
 object GalleryRepository {

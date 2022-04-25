@@ -1,8 +1,9 @@
 package vn.periscope.adapters.persistence.repository
 
 import org.jetbrains.exposed.sql.*
-import vn.periscope.adapters.persistence.dao.ProductEntity
-import vn.periscope.adapters.persistence.dao.ProductTable
+import vn.periscope.adapters.persistence.entity.ProductEntity
+import vn.periscope.adapters.persistence.entity.ProductTable
+import java.time.Instant
 
 object ProductRepository {
 
@@ -20,12 +21,12 @@ object ProductRepository {
         name = resultRow[ProductTable.name],
         brandId = resultRow[ProductTable.brandId],
         industryId = resultRow[ProductTable.industryId],
-        createdAt = resultRow[ProductTable.createdAt],
-        updatedAt = resultRow[ProductTable.updatedAt],
+        createdAt = kotlinx.datetime.Instant.fromEpochMilliseconds(resultRow[ProductTable.createdAt].toEpochMilli()),
+        updatedAt = kotlinx.datetime.Instant.fromEpochMilliseconds(resultRow[ProductTable.updatedAt].toEpochMilli()),
     )
 
-    fun insert(entity: ProductEntity): ProductEntity {
-        val id = table.insertAndGetId {
+    fun insert(entity: ProductEntity) {
+        table.insert {
             it[nid] = entity.nid
             it[businessId] = entity.businessId
             it[taxonomy] = entity.taxonomy
@@ -33,23 +34,18 @@ object ProductRepository {
             it[name] = entity.name
             it[brandId] = entity.brandId
             it[industryId] = entity.industryId
-            it[createdAt] = entity.createdAt
-            it[updatedAt] = entity.createdAt
+            it[createdAt] = Instant.ofEpochMilli(entity.createdAt.toEpochMilliseconds())
+            it[updatedAt] = Instant.ofEpochMilli(entity.updatedAt.toEpochMilliseconds())
         }
-        return findById(id.value)
     }
 
-    fun update(id: Long, entity: ProductEntity): ProductEntity {
-        val affectedRows = table.update({ table.id eq id }, null, {
+    fun update(id: Long, entity: ProductEntity) {
+        table.update({ table.id eq id }, 1, {
             it[name] = entity.name
             it[brandId] = entity.brandId
             it[industryId] = entity.industryId
-            it[updatedAt] = entity.updatedAt
+            it[updatedAt] = Instant.ofEpochMilli(entity.updatedAt.toEpochMilliseconds())
         })
-        if (affectedRows == 1) {
-            return findById(id)
-        }
-        throw RuntimeException("Product update failed")
     }
 
     fun filter(): List<ProductEntity> {

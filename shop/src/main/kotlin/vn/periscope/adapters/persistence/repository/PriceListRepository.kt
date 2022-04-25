@@ -3,12 +3,12 @@ package vn.periscope.adapters.persistence.repository
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.statements.UpdateStatement
-import vn.periscope.adapters.persistence.dao.PriceListEntity
+import vn.periscope.adapters.persistence.entity.PriceListEntity
 import vn.periscope.share.statics.PriceListStatus
-import vn.periscope.adapters.persistence.dao.PriceListTable
+import vn.periscope.adapters.persistence.entity.PriceListTable
 import vn.periscope.share.statics.PriceListType
 import vn.periscope.adapters.persistence.resource.ResourceRepository
-import vn.periscope.ports.price.models.PriceListEntry
+import vn.periscope.ports.models.PriceListEntry
 
 object PriceListRepository : ResourceRepository<PriceListEntry, PriceListEntity, Long, PriceListTable>() {
     override val table = PriceListTable

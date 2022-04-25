@@ -5,49 +5,30 @@ import vn.periscope.core.domain.Gallery
 import vn.periscope.core.domain.Product
 import vn.periscope.core.domain.ProductAttribute
 import vn.periscope.ports.TransactionService
-import vn.periscope.ports.product.CreateProductUseCase
-import vn.periscope.ports.product.models.ProductEntry
-import vn.periscope.ports.product.out.CreateGalleryEntryPort
-import vn.periscope.ports.product.out.CreateProductAttributeEntryPoint
-import vn.periscope.ports.product.out.CreateProductEntryPort
+import vn.periscope.ports.CreateProductUseCase
+import vn.periscope.ports.GetGalleryUseCase
+import vn.periscope.ports.GetProductAttributeUseCase
+import vn.periscope.ports.models.GalleryEntry
+import vn.periscope.ports.models.ProductAttributeEntry
+import vn.periscope.ports.models.ProductEntry
+import vn.periscope.ports.out.CreateProductEntryPort
+import vn.periscope.ports.out.GetProductEntryPort
 import java.util.*
-import kotlin.streams.toList
 
 class CreateProductService(
     private val transactionService: TransactionService,
-    private val createProductEntryPort: CreateProductEntryPort
+    private val createProductEntryPort: CreateProductEntryPort,
+    private val getProductEntryPort: GetProductEntryPort,
+    private val getGalleryUseCase: GetGalleryUseCase,
+    private val getProductAttributeUseCase: GetProductAttributeUseCase
 ) : CreateProductUseCase {
 
-    override suspend fun create(entry: ProductEntry): Product {
-        val galleries = entry.galleries.orEmpty().stream()
-            .map {
-                Gallery(
-                    id = 0,
-                    nid = UUID.randomUUID(),
-                    storeId = it.storeId,
-                    default = it.default,
-                    position = it.position,
-                    createdAt = Clock.System.now(),
-                    updatedAt = Clock.System.now(),
-                )
-            }
-            .toList()
-
-        val attributes = entry.attributes.orEmpty().stream()
-            .map {
-                ProductAttribute(
-                    id = entry.id,
-                    nid = UUID.randomUUID(),
-                    name = it.name,
-                    values = it.values,
-                    createdAt = Clock.System.now(),
-                    updatedAt = Clock.System.now(),
-                )
-            }
-            .toList()
-
+    override suspend fun createProduct(entry: ProductEntry): Product {
+        val galleries = createGalleries(entry.galleries)
+        val attributes = createAttribute(entry.attributes)
+        val id = getProductEntryPort.getNextSeriesId()
         val product = Product(
-            id = entry.id,
+            id = id,
             nid = UUID.randomUUID(),
             businessId = entry.businessId,
             taxonomy = entry.taxonomy,
@@ -62,6 +43,45 @@ class CreateProductService(
             updatedAt = Clock.System.now(),
         )
         return storage(product)
+    }
+
+    private fun createGalleries(entries: List<GalleryEntry>?): List<Gallery> {
+        if (entries.isNullOrEmpty()) return listOf()
+        val ids = getGalleryUseCase.getNextSeriesIds(entries.size)
+        val galleries = listOf<Gallery>()
+        entries.forEachIndexed { index, galleryEntry ->
+            galleries.toMutableList().add(
+                Gallery(
+                    id = ids.toMutableList()[index],
+                    nid = UUID.randomUUID(),
+                    storeId = galleryEntry.storeId,
+                    default = galleryEntry.default,
+                    position = galleryEntry.position,
+                    createdAt = Clock.System.now(),
+                    updatedAt = Clock.System.now(),
+                )
+            )
+        }
+        return galleries
+    }
+
+    private fun createAttribute(entries: List<ProductAttributeEntry>?): List<ProductAttribute> {
+        if (entries.isNullOrEmpty()) return listOf()
+        val ids = getProductAttributeUseCase.getNextSeriesIds(entries.size)
+        val galleries = listOf<ProductAttribute>()
+        entries.forEachIndexed { index, attributeEntry ->
+            galleries.toMutableList().add(
+                ProductAttribute(
+                    id = ids.toMutableList()[index],
+                    nid = UUID.randomUUID(),
+                    name = attributeEntry.name,
+                    values = attributeEntry.values,
+                    createdAt = Clock.System.now(),
+                    updatedAt = Clock.System.now(),
+                )
+            )
+        }
+        return galleries
     }
 
     private suspend fun storage(product: Product) = transactionService.transaction {

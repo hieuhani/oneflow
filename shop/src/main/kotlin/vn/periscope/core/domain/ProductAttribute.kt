@@ -1,11 +1,9 @@
 package vn.periscope.core.domain
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import vn.periscope.ports.product.models.ProductAttributeEntry
 import java.util.UUID
 
-class ProductAttribute internal constructor(
+data class ProductAttribute (
     val id: Long,
     val nid: UUID,
     val name: String,

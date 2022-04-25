@@ -1,8 +1,8 @@
 package vn.periscope.adapters.persistence.repository
 
 import org.jetbrains.exposed.sql.*
-import vn.periscope.adapters.persistence.dao.ProductAttributeEntity
-import vn.periscope.adapters.persistence.dao.ProductAttributeTable
+import vn.periscope.adapters.persistence.entity.ProductAttributeEntity
+import vn.periscope.adapters.persistence.entity.ProductAttributeTable
 
 object ProductAttributeRepository {
     private val table = ProductAttributeTable
@@ -66,14 +66,4 @@ object ProductAttributeRepository {
 
         SchemaUtils.createSequence(sequence)
     }
-
-    fun Transaction.nextValueOf(sequence: Sequence, number: Int?): Long =
-        exec("SELECT  nextval(${sequence.identifier}) from generate_series(1, ${number.let { 1 }})") { resultSet ->
-            if (resultSet.next().not()) {
-                throw Error("Missing nextValue in resultSet of sequence '${sequence.identifier}'")
-            } else {
-                resultSet.getLong(1)
-            }
-
-        } ?: throw Error("Unable to get nextValue of sequence '${sequence.identifier}'")
 }

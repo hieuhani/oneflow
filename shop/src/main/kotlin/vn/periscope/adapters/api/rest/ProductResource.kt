@@ -15,10 +15,10 @@ import vn.periscope.core.domain.Gallery
 import vn.periscope.core.domain.Product
 import vn.periscope.core.domain.ProductAttribute
 import vn.periscope.extentions.inject
-import vn.periscope.ports.product.*
-import vn.periscope.ports.product.models.GalleryEntry
-import vn.periscope.ports.product.models.ProductAttributeEntry
-import vn.periscope.ports.product.models.ProductEntry
+import vn.periscope.ports.*
+import vn.periscope.ports.models.GalleryEntry
+import vn.periscope.ports.models.ProductAttributeEntry
+import vn.periscope.ports.models.ProductEntry
 import kotlin.streams.toList
 
 class ProductResource(application: Application) {
@@ -43,19 +43,18 @@ class ProductResource(application: Application) {
                     val request: CreateProductRequest = call.receive()
                     val galleryEntries = buildGalleryEntry(request.galleries)
                     val attributeEntries = buildAttributeEntry(request.attributes)
-                    val productEntry = ProductEntry.init {
-                        businessId = call.businessIdHeader()
-                        taxonomy = request.taxonomy
-                        managementMethodology = request.managementMethodology
-                        name = request.name
-                        brandId = request.brandId
-                        industryId = request.industryId
-                        categoryIds = request.categoryIds
-                        galleries = galleryEntries
-                        attributes = attributeEntries
-
-                    }
-                    val product = createProductUseCase.create(productEntry)
+                    val productEntry = ProductEntry(
+                        businessId = call.businessIdHeader(),
+                        taxonomy = request.taxonomy,
+                        managementMethodology = request.managementMethodology,
+                        name = request.name,
+                        brandId = request.brandId,
+                        industryId = request.industryId,
+                        categoryIds = request.categoryIds,
+                        galleries = galleryEntries,
+                        attributes = attributeEntries,
+                    )
+                    val product = createProductUseCase.createProduct(productEntry)
                     call.respond(HttpStatusCode.Created, toProductResponse(product))
                 }
 
@@ -92,11 +91,11 @@ class ProductResource(application: Application) {
         val iterator = requests.iterator()
         val entries = listOf<GalleryEntry>()
         iterator.forEach {
-            val galleryEntry = GalleryEntry.init {
-                storeId = it.storeId
-                default = it.default
-                position = it.position
-            }
+            val galleryEntry = GalleryEntry(
+                storeId = it.storeId,
+                default = it.default,
+                position = it.position,
+            )
             entries.toMutableList().add(galleryEntry)
         }
         return entries
@@ -107,55 +106,47 @@ class ProductResource(application: Application) {
         val iterator = requests.iterator()
         val entries = listOf<ProductAttributeEntry>()
         iterator.forEach {
-            val productAttributeEntry = ProductAttributeEntry.init {
-                name = it.name
-                values = it.values
-            }
+            val productAttributeEntry = ProductAttributeEntry(
+                name = it.name, values = it.values
+            )
             entries.toMutableList().add(productAttributeEntry)
         }
         return entries
     }
 
     private fun toProductResponse(product: Product): ProductResponse {
-        val galleryResponses = product.galleries.stream()
-            .map { toGalleryResponse(it) }
-            .toList()
-        val attributeResponses = product.attributes.stream()
-            .map { toAttributeResponse(it) }
-            .toList()
-        return ProductResponse.init {
-            id = product.id
-            taxonomy = product.taxonomy
-            managementMethodology = product.managementMethodology
-            name = product.name
-            brandId = product.brandId
-            industryId = product.industryId
-            categoryIds = setOf()
-            galleries = galleryResponses
-            attributes = attributeResponses
-            createdAt = product.createdAt
-            updatedAt = product.updatedAt
-        }
+        val galleryResponses = product.galleries.orEmpty().stream().map { toGalleryResponse(it) }.toList()
+        val attributeResponses = product.attributes.orEmpty().stream().map { toAttributeResponse(it) }.toList()
+        return ProductResponse(
+            id = product.id,
+            businessId = product.businessId,
+            taxonomy = product.taxonomy,
+            managementMethodology = product.managementMethodology,
+            name = product.name,
+            brandId = product.brandId,
+            industryId = product.industryId,
+            categoryIds = product.categoryIds,
+            galleries = galleryResponses,
+            attributes = attributeResponses,
+            createdAt = product.createdAt,
+            updatedAt = product.updatedAt,
+        )
     }
 
-    private fun toGalleryResponse(gallery: Gallery): GalleryResponse {
-        return GalleryResponse.init {
-            id = gallery.id
-            storeId = gallery.storeId
-            default = gallery.default
-            position = gallery.position
-            createdAt = gallery.createdAt
-            updatedAt = gallery.updatedAt
-        }
-    }
+    private fun toGalleryResponse(gallery: Gallery) = GalleryResponse(
+        id = gallery.id,
+        storeId = gallery.storeId,
+        default = gallery.default,
+        position = gallery.position,
+        createdAt = gallery.createdAt,
+        updatedAt = gallery.updatedAt,
+    )
 
-    private fun toAttributeResponse(attribute: ProductAttribute): ProductAttributeResponse {
-        return ProductAttributeResponse.init {
-            id = attribute.id
-            name = attribute.name
-            values = attribute.values
-            createdAt = attribute.createdAt
-            updatedAt = attribute.updatedAt
-        }
-    }
+    private fun toAttributeResponse(attribute: ProductAttribute) = ProductAttributeResponse(
+        id = attribute.id,
+        name = attribute.name,
+        values = attribute.values,
+        createdAt = attribute.createdAt,
+        updatedAt = attribute.updatedAt,
+    )
 }

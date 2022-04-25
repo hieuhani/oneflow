@@ -1,11 +1,9 @@
 package vn.periscope.core.domain
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import vn.periscope.ports.product.models.GalleryEntry
 import java.util.*
 
-class Gallery internal constructor(
+data class Gallery(
     val id: Long,
     val nid: UUID,
     val storeId: Long,

@@ -1,9 +1,9 @@
 package vn.periscope.core.services
 
 import vn.periscope.ports.TransactionService
-import vn.periscope.ports.product.GetProductUseCase
-import vn.periscope.ports.product.models.ProductEntry
-import vn.periscope.ports.product.out.GetProductEntryPort
+import vn.periscope.ports.GetProductUseCase
+import vn.periscope.ports.models.ProductEntry
+import vn.periscope.ports.out.GetProductEntryPort
 
 class GetProductService(
     private val transactionService: TransactionService,

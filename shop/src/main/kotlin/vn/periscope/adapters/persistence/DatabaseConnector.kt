@@ -9,9 +9,7 @@ import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.experimental.suspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
-import vn.periscope.adapters.persistence.dao.GalleryTable
-import vn.periscope.adapters.persistence.dao.ProductAttributeTable
-import vn.periscope.adapters.persistence.dao.ProductTable
+import vn.periscope.adapters.persistence.entity.*
 import javax.sql.DataSource
 
 class DatabaseConnector(
@@ -25,15 +23,10 @@ class DatabaseConnector(
     )
 
     private val sequences = arrayOf(
-        Sequence(
-            name = "product_attribute_id_seq",
-            startWith = 1,
-            incrementBy = 1,
-            minValue = 1,
-            maxValue = 9223372036854775807,
-            cycle = false,
-            cache = 1
-        ),
+        ProductIdSequence.sequence,
+        GalleryIdSequence.sequence,
+        ProductAttributeIdSequence.sequence,
+        VariantIdSequence.sequence
     )
 
     init {
