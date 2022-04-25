@@ -11,8 +11,8 @@ import vn.periscope.adapters.persistence.resource.ResourceRepository
 import vn.periscope.ports.product.models.GalleryEntry
 import vn.periscope.share.statics.GalleryTargetObjectType
 
-object GalleryRepository : ResourceRepository<GalleryEntry, GalleryEntity, Long, GalleryTable>() {
-    override val table = GalleryTable
+object GalleryRepository {
+    private val table = GalleryTable
 
     override fun fromSqlResultRow(resultRow: ResultRow) = GalleryEntity(
         id = resultRow[GalleryTable.id].value,
