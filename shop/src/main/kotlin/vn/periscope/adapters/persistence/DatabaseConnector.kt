@@ -8,7 +8,7 @@ import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.experimental.suspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
-import vn.periscope.adapters.persistence.product.ProductTable
+import vn.periscope.adapters.persistence.dao.ProductTable
 import javax.sql.DataSource
 
 class DatabaseConnector(

@@ -5,9 +5,6 @@ import io.ktor.server.application.*
 import io.minio.MinioClient
 import org.koin.dsl.binds
 import org.koin.dsl.module
-import vn.periscope.id.adapters.Auth0JWTService
-import vn.periscope.id.adapters.configs.JWTConfig
-import vn.periscope.id.ports.auth.JWTService
 import vn.periscope.storage.adapters.api.routes.healthcheck.HealthCheckRoute
 import vn.periscope.storage.adapters.api.routes.storage.UploadFileRoute
 import vn.periscope.storage.adapters.configs.DatabaseConfig

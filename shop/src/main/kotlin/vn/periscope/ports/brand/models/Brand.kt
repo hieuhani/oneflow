@@ -1,6 +1,6 @@
 package vn.periscope.ports.brand.models
 
-import vn.periscope.ports.gallery.models.GalleryEntry
+import vn.periscope.ports.product.models.GalleryEntry
 import kotlinx.datetime.Instant
 
 data class Brand(

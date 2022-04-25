@@ -2,8 +2,7 @@ package vn.periscope.core
 
 import org.koin.dsl.binds
 import org.koin.dsl.module
-import vn.periscope.core.product.*
-import vn.periscope.core.services.product.*
+import vn.periscope.core.services.*
 import vn.periscope.ports.product.*
 
 val coreModule = module(createdAtStart = true) {
@@ -11,6 +10,8 @@ val coreModule = module(createdAtStart = true) {
         CreateProductService(
             transactionService = get(),
             createProductEntryPort = get(),
+            createGalleryEntryPort = get(),
+            createProductAttributeEntryPoint = get()
         )
     } binds arrayOf(
         CreateProductUseCase::class,
