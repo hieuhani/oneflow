@@ -1,6 +1,6 @@
 package vn.periscope.adapters.persistence.entity
 
-import java.time.Instant
+import kotlinx.datetime.Instant
 import java.util.*
 
 data class ProductAttributeEntity(
@@ -9,7 +9,7 @@ data class ProductAttributeEntity(
     val businessId: Long,
     val productId: Long,
     val name: String,
-    val values: String,
+    val values: Set<String>,
     val createdAt: Instant,
     val updatedAt: Instant,
 )

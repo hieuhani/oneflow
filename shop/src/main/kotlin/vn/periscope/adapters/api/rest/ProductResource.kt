@@ -32,12 +32,12 @@ class ProductResource(application: Application) {
     init {
         application.routing {
             route("/api/v1") {
-//                get("/products/{id}") {
-//                    val id = call.longParameter("id")
-//                    val businessID = call.businessIdHeader()
-//                    val product = getProductUseCase.findById(id)
-//                    call.respond(contents.map { ContentResponseDto.fromDomainModel(it) })
-//                }
+                get("/products/{id}") {
+                    val id = call.longParameter("id")
+                    val businessId = call.businessIdHeader()
+                    val product = getProductUseCase.findById(businessId, id)
+                    call.respond(HttpStatusCode.OK, toProductResponse(product))
+                }
 
                 post("/products") {
                     val request: CreateProductRequest = call.receive()
@@ -93,7 +93,6 @@ class ProductResource(application: Application) {
         iterator.forEach {
             val galleryEntry = GalleryEntry(
                 storeId = it.storeId,
-                default = it.default,
                 position = it.position,
             )
             entries.toMutableList().add(galleryEntry)

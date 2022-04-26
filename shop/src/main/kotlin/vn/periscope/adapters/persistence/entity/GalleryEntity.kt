@@ -1,7 +1,7 @@
 package vn.periscope.adapters.persistence.entity
 
+import kotlinx.datetime.Instant
 import vn.periscope.share.statics.GalleryTargetObjectType
-import java.time.Instant
 import java.util.*
 
 data class GalleryEntity(

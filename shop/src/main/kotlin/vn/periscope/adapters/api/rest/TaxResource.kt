@@ -2,5 +2,5 @@ package vn.periscope.adapters.api.rest
 
 import io.ktor.server.application.*
 
-class PriceList(application: Application) {
+class TaxResource(application: Application) {
 }

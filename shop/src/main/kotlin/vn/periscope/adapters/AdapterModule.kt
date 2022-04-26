@@ -37,7 +37,8 @@ val adapterModule = module(createdAtStart = true) {
             productRepository = get(),
             galleryRepository = get(),
             attributeRepository = get(),
-            idProviderRepository = get()
+            idProviderRepository = get(),
+            productCategoryRepository = get()
         )
     } binds arrayOf(
         GetProductEntryPort::class,
