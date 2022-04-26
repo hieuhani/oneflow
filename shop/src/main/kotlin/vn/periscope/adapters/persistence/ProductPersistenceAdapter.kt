@@ -34,7 +34,7 @@ class ProductPersistenceAdapter(
         return idProviderRepository.getNextSeriesId(ProductIdSequence.sequence)
     }
 
-    override fun create(product: Product) {
+    override fun insert(product: Product) {
         productRepository.insert(
             ProductEntity(
                 id = product.id,
@@ -49,12 +49,16 @@ class ProductPersistenceAdapter(
                 updatedAt = product.updatedAt,
             )
         )
+        insertBatchGallery(product)
     }
 
-    private fun
+    private fun insertBatchGallery(product: Product) {
+        if (product.galleries.isNullOrEmpty()) return
 
-    override fun update(id: Long, product: Product): Product {
-        return productRepository.update(id, product)
+    }
+
+    override fun update(id: Long, product: Product) {
+        return
     }
 
     override fun delete(id: Long): Boolean {

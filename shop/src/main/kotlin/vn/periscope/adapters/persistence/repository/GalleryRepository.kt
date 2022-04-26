@@ -1,58 +1,48 @@
 package vn.periscope.adapters.persistence.repository
 
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.andWhere
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.statements.InsertStatement
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.statements.UpdateStatement
 import vn.periscope.adapters.persistence.entity.GalleryEntity
 import vn.periscope.adapters.persistence.entity.GalleryTable
+import vn.periscope.core.domain.Gallery
 import vn.periscope.ports.models.GalleryEntry
 import vn.periscope.share.statics.GalleryTargetObjectType
+import java.time.Instant
 
 object GalleryRepository {
     private val table = GalleryTable
 
-    override fun fromSqlResultRow(resultRow: ResultRow) = GalleryEntity(
+    fun fromSqlResultRow(resultRow: ResultRow) = GalleryEntity(
         id = resultRow[GalleryTable.id].value,
+        nid = resultRow[GalleryTable.nid],
         businessId = resultRow[GalleryTable.businessId],
         targetObjectType = resultRow[GalleryTable.targetObjectType],
         targetObjectId = resultRow[GalleryTable.targetObjectId],
         storeId = resultRow[GalleryTable.storeId],
-        default = resultRow[GalleryTable.default],
         position = resultRow[GalleryTable.position],
-        disabled = resultRow[GalleryTable.disabled],
-        mediaType = resultRow[GalleryTable.mediaType],
         createdAt = resultRow[GalleryTable.createdAt],
         updatedAt = resultRow[GalleryTable.updatedAt],
     )
 
-    override fun toInsertStatement(entry: GalleryEntry): GalleryTable.(InsertStatement<Number>) -> Unit = {
-        it[businessId] = entry.businessId
-        it[targetObjectType] = GalleryTargetObjectType.valueOf(entry.targetObjectType.name)
-        it[targetObjectId] = entry.targetObjectId
-        it[storeId] = entry.storeId
-        it[default] = entry.default
-        it[position] = entry.position
-        it[disabled] = entry.disabled
-        it[mediaType] = GalleryMediaType.valueOf(entry.mediaType.name)
-        it[createdAt] = entry.createdAt
-        it[updatedAt] = entry.updatedAt
-
+    fun insert(entity: GalleryEntry) {
+        table.insert {
+            it[id] = entity.id
+            it[nid] = entity.nid
+            it[businessId] = entity.businessId
+            it[targetObjectType] = entity.targetObjectType
+            it[targetObjectId] = entity.targetObjectId
+            it[storeId] = entity.storeId
+            it[position] = entity.position
+            it[createdAt] = Instant.ofEpochMilli(entity.createdAt.toEpochMilliseconds())
+            it[updatedAt] = Instant.ofEpochMilli(entity.updatedAt.toEpochMilliseconds())
+        }
     }
 
-    override fun toUpdateStatement(entry: GalleryEntry): GalleryTable.(UpdateStatement) -> Unit = {
-        it[default] = entry.default
-        it[position] = entry.position
-        it[disabled] = entry.disabled
-        it[updatedAt] = entry.updatedAt
-    }
-
-    fun getByTargetObjectTypeAndTargetObjectId(
-        targetObjectType: GalleryTargetObjectType,
-        targetObjectId: Long
-    ): List<GalleryEntity> {
-        return table.select { table.targetObjectType eq targetObjectType }
-            .andWhere { table.targetObjectId eq targetObjectId }.map { fromSqlResultRow(it) }
+    fun update(id: Long, entity: Gallery) {
+        table.update({ table.id eq id }, 1, {
+            it[position] = entity.position
+            it[updatedAt] = Instant.ofEpochMilli(entity.updatedAt.toEpochMilliseconds())
+        })
     }
 }

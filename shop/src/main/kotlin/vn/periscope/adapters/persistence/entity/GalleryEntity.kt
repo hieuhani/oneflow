@@ -1,19 +1,18 @@
 package vn.periscope.adapters.persistence.entity
 
-import org.jetbrains.exposed.dao.LongEntity
-import org.jetbrains.exposed.dao.LongEntityClass
-import org.jetbrains.exposed.dao.id.EntityID
+import vn.periscope.share.statics.GalleryTargetObjectType
+import java.time.Instant
+import java.util.*
 
-class GalleryEntity(id: EntityID<Long>) : LongEntity(id) {
-    companion object : LongEntityClass<GalleryEntity>(GalleryTable)
-    val nid by GalleryTable.nid
-    val businessId by GalleryTable.businessId
-    val targetObjectType by GalleryTable.targetObjectType
-    val targetObjectId by GalleryTable.targetObjectId
-    val storeId by GalleryTable.storeId
-    val default by GalleryTable.default
-    val position by GalleryTable.position
-    val disabled by GalleryTable.disabled
-    val createdAt by GalleryTable.createdAt
-    val updatedAt by GalleryTable.updatedAt
-}
+data class GalleryEntity(
+    val id: Long,
+    val nid: UUID,
+    val businessId: Long,
+    val targetObjectType: GalleryTargetObjectType,
+    val targetObjectId: Long,
+    val storeId: Long,
+    val position: Int,
+    val createdAt: Instant,
+    val updatedAt: Instant,
+)
+

@@ -13,7 +13,7 @@ import vn.periscope.ports.out.*
 class GalleryPersistenceAdapter(
     private val galleryRepository: GalleryRepository,
     private val idProviderRepository: IdProviderRepository,
-) : GetGalleryEntryPort {
+) : GetGalleryEntryPort{
 
     override fun findById(id: Long): Gallery? {
         return null

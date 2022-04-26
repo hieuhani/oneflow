@@ -85,6 +85,6 @@ class CreateProductService(
     }
 
     private suspend fun storage(product: Product) = transactionService.transaction {
-        return@transaction createProductEntryPort.create(product)
+        return@transaction createProductEntryPort.insert(product)
     }
 }

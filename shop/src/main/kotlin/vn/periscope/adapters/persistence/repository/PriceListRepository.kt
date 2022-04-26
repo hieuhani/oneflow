@@ -30,7 +30,6 @@ object PriceListRepository : ResourceRepository<PriceListEntry, PriceListEntity,
     override fun toInsertStatement(entry: PriceListEntry): PriceListTable.(InsertStatement<Number>) -> Unit = {
         it[businessId] = entry.businessId
         it[type] = PriceListType.valueOf(entry.type.name)
-        it[code] = entry.code
         it[name] = entry.name
         it[currencySymbol] = entry.currencySymbol
         it[currencyIso] = entry.currencyIso
@@ -42,7 +41,6 @@ object PriceListRepository : ResourceRepository<PriceListEntry, PriceListEntity,
     }
 
     override fun toUpdateStatement(entry: PriceListEntry): PriceListTable.(UpdateStatement) -> Unit = {
-        it[code] = entry.code
         it[name] = entry.name
         it[currencySymbol] = currencySymbol
         it[currencyIso] = currencyIso

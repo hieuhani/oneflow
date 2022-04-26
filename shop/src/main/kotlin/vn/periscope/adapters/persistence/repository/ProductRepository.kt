@@ -27,6 +27,7 @@ object ProductRepository {
 
     fun insert(entity: ProductEntity) {
         table.insert {
+            it[id] = entity.id
             it[nid] = entity.nid
             it[businessId] = entity.businessId
             it[taxonomy] = entity.taxonomy
