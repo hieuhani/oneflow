@@ -9,6 +9,7 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import org.jetbrains.exposed.sql.transactions.experimental.suspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import vn.periscope.id.adapters.persistence.business.BusinessTable
+import vn.periscope.id.adapters.persistence.session.SessionTable
 import vn.periscope.id.adapters.persistence.user.UserTable
 import javax.sql.DataSource
 
@@ -19,6 +20,7 @@ class DatabaseConnector(
     private val tables = arrayOf(
         UserTable,
         BusinessTable,
+        SessionTable,
     )
 
     init {

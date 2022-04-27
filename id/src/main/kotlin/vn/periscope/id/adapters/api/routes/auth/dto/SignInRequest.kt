@@ -4,12 +4,12 @@ import kotlinx.serialization.Serializable
 import vn.periscope.id.ports.auth.models.SignInByEmailInput
 
 @Serializable
-data class SignInRequestDto(
+data class SignInRequest(
     val email: String,
     val password: String,
 )
 
-fun SignInRequestDto.toDomainModel() = SignInByEmailInput(
+fun SignInRequest.toDomainModel() = SignInByEmailInput(
     email,
     password,
 )

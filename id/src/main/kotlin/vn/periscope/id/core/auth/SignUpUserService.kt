@@ -1,23 +1,25 @@
 package vn.periscope.id.core.auth
 
 import kotlinx.datetime.*
+import kotlinx.datetime.TimeZone
 import vn.periscope.id.ports.TransactionService
-import vn.periscope.id.ports.auth.AuthError
-import vn.periscope.id.ports.auth.GenerateUserTokenUseCase
-import vn.periscope.id.ports.auth.PasswordService
-import vn.periscope.id.ports.auth.SignUpUserUseCase
+import vn.periscope.id.ports.auth.*
 import vn.periscope.id.ports.auth.models.AuthOutput
 import vn.periscope.id.ports.auth.models.SignUpInput
 import vn.periscope.id.ports.auth.models.UserTokenPayload
+import vn.periscope.id.ports.auth.models.toAuthSession
+import vn.periscope.id.ports.session.models.NewSessionPayload
 import vn.periscope.id.ports.user.CreateUserEntryPort
 import vn.periscope.id.ports.user.GetUserEntryPort
 import vn.periscope.id.ports.user.models.UserEntry
+import java.util.*
 
 class SignUpUserService(
     private val transactionService: TransactionService,
     private val createUserEntryPort: CreateUserEntryPort,
     private val getUserEntryPort: GetUserEntryPort,
     private val passwordService: PasswordService,
+    private val newSessionUseCase: NewSessionUseCase,
     private val generateUserTokenUseCase: GenerateUserTokenUseCase,
 ) : SignUpUserUseCase {
     override suspend fun signUp(command: SignUpInput) = transactionService.transaction {
@@ -34,21 +36,26 @@ class SignUpUserService(
                 emailVerified = false,
             )
         )
-        val tokenSubject = user.id!!.toString()
         val now = Clock.System.now()
+        val refreshToken = UUID.randomUUID().toString()
+        val session = newSessionUseCase.newSession(
+            NewSessionPayload(
+                rawRefreshToken = refreshToken,
+                userId = user.id!!,
+                issuedAt = now,
+            )
+        )
+
         AuthOutput(
             accessToken = generateUserTokenUseCase.generate(
                 UserTokenPayload(
-                    tokenSubject,
-                    now.plus(60, DateTimeUnit.MINUTE)
+                    subject = user.id.toString(),
+                    expiresAt = now.plus(15, DateTimeUnit.MINUTE),
+                    sessionId = session.id.toString(),
                 )
             ),
-            refreshToken = generateUserTokenUseCase.generate(
-                UserTokenPayload(
-                    tokenSubject,
-                    now.plus(1, DateTimeUnit.MONTH, TimeZone.currentSystemDefault())
-                )
-            )
+            refreshToken = refreshToken,
+            session = session.toAuthSession(),
         )
     }
 }

@@ -5,19 +5,19 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import vn.periscope.id.adapters.api.routes.auth.dto.AuthResponse
-import vn.periscope.id.adapters.api.routes.auth.dto.SignInRequest
+import vn.periscope.id.adapters.api.routes.auth.dto.RefreshTokenRequest
 import vn.periscope.id.adapters.api.routes.auth.dto.toDomainModel
 import vn.periscope.id.extentions.inject
-import vn.periscope.id.ports.auth.SignInUserUseCase
+import vn.periscope.id.ports.auth.RefreshTokenUseCase
 
-class SignInRoute(application: Application) {
-    private val signInUserUseCase by inject<SignInUserUseCase>()
+class RefreshTokenRoute(application: Application) {
+    private val refreshTokenUseCase by inject<RefreshTokenUseCase>()
     init {
         application.routing {
-            route("/auth/sign_in") {
+            route("/auth/refresh_token") {
                 post {
-                    val signInRequest: SignInRequest = call.receive()
-                    val entry = signInUserUseCase.signInByEmail(signInRequest.toDomainModel())
+                    val refreshTokenRequest: RefreshTokenRequest = call.receive()
+                    val entry = refreshTokenUseCase.refreshToken(refreshTokenRequest.toDomainModel())
                     val response = AuthResponse.fromDomainModel(entry)
                     call.respond(response)
                 }

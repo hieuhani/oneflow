@@ -3,16 +3,39 @@ package vn.periscope.id.core
 import org.koin.dsl.binds
 import org.koin.dsl.module
 import vn.periscope.id.core.auth.*
+import vn.periscope.id.core.session.GetSessionService
+import vn.periscope.id.core.session.NewSessionService
 import vn.periscope.id.core.user.GetUserService
 import vn.periscope.id.ports.auth.*
+import vn.periscope.id.ports.session.GetSessionUseCase
 import vn.periscope.id.ports.user.GetUserUseCase
 
 val coreModule = module(createdAtStart = true) {
+    single {
+        NewSessionService(
+            createSessionEntryPort = get(),
+            passwordService = get(),
+            transactionService = get(),
+        )
+    } binds arrayOf(
+        NewSessionUseCase::class,
+    )
+
+    single {
+        GetSessionService(
+            getSessionEntryPort = get(),
+            transactionService = get(),
+        )
+    } binds arrayOf(
+        GetSessionUseCase::class,
+    )
+
     single {
         SignInUserService(
             getUserEntryPort = get(),
             passwordService = get(),
             generateUserTokenUseCase = get(),
+            newSessionUseCase = get(),
             transactionService = get(),
         )
     } binds arrayOf(
@@ -39,6 +62,7 @@ val coreModule = module(createdAtStart = true) {
             getUserEntryPort = get(),
             passwordService = get(),
             generateUserTokenUseCase = get(),
+            newSessionUseCase = get(),
             transactionService = get(),
         )
     } binds arrayOf(
@@ -52,5 +76,16 @@ val coreModule = module(createdAtStart = true) {
         )
     } binds arrayOf(
         GetUserUseCase::class,
+    )
+
+    single {
+        RefreshTokenService(
+            transactionService = get(),
+            passwordService = get(),
+            generateUserTokenUseCase = get(),
+            getSessionUseCase = get(),
+        )
+    } binds arrayOf(
+        RefreshTokenUseCase::class,
     )
 }
