@@ -6,8 +6,9 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import vn.periscope.adapters.api.rest.vm.request.CreateProductRequest
-import vn.periscope.adapters.api.rest.vm.request.GalleryRequest
+import vn.periscope.adapters.api.rest.vm.request.CreateGalleryRequest
 import vn.periscope.adapters.api.rest.vm.request.ProductAttributeRequest
+import vn.periscope.adapters.api.rest.vm.request.UpdateProductRequest
 import vn.periscope.adapters.api.rest.vm.response.GalleryResponse
 import vn.periscope.adapters.api.rest.vm.response.ProductAttributeResponse
 import vn.periscope.adapters.api.rest.vm.response.ProductResponse
@@ -34,7 +35,7 @@ class ProductResource(application: Application) {
             route("/api/v1") {
                 get("/products/{id}") {
                     val id = call.longParameter("id")
-                    val businessId = call.businessIdHeader()
+                    val businessId = call.longHeader(BUSINESS_ID_HEADER)
                     val product = getProductUseCase.findById(businessId, id)
                     call.respond(HttpStatusCode.OK, toProductResponse(product))
                 }
@@ -44,7 +45,7 @@ class ProductResource(application: Application) {
                     val galleryEntries = buildGalleryEntry(request.galleries)
                     val attributeEntries = buildAttributeEntry(request.attributes)
                     val productEntry = ProductEntry(
-                        businessId = call.businessIdHeader(),
+                        businessId = call.longHeader(BUSINESS_ID_HEADER),
                         taxonomy = request.taxonomy,
                         managementMethodology = request.managementMethodology,
                         name = request.name,
@@ -54,16 +55,18 @@ class ProductResource(application: Application) {
                         galleries = galleryEntries,
                         attributes = attributeEntries,
                     )
-                    val product = createProductUseCase.createProduct(productEntry)
+                    val product = createProductUseCase.create(productEntry)
                     call.respond(HttpStatusCode.Created, toProductResponse(product))
                 }
 
-//                put("/products/{id}") {
-//                    val id = call.longParameter("id")
-//                    val request: CreateContentRequestDto = call.receive()
-//                    val content = updateContentUseCase.updateContent(id, request.toDomainModel(null))
-//                    call.respond(ContentResponseDto.fromDomainModel(content))
-//                }
+                put("/products/{id}") {
+                    val id = call.longParameter("id")
+                    val businessId = call.longHeader(BUSINESS_ID_HEADER)
+                    val request: UpdateProductRequest = call.receive()
+                    val product = getProductUseCase.findById(businessId, id)
+                    val content = updateContentUseCase.update(id, product)
+                    call.respond(ContentResponseDto.fromDomainModel(content))
+                }
 //
 //                delete("/products/{id}") {
 //                    val id = call.longParameter("id")
@@ -86,7 +89,7 @@ class ProductResource(application: Application) {
         }
     }
 
-    private fun buildGalleryEntry(requests: List<GalleryRequest>?): List<GalleryEntry> {
+    private fun buildGalleryEntry(requests: List<CreateGalleryRequest>?): List<GalleryEntry> {
         if (requests.isNullOrEmpty()) return emptyList()
         val iterator = requests.iterator()
         val entries = listOf<GalleryEntry>()

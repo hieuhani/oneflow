@@ -75,4 +75,8 @@ object ProductAttributeRepository {
             this[ProductAttributeTable.updatedAt] = Instant.ofEpochMilli(entity.updatedAt.toEpochMilliseconds())
         }
     }
+
+    fun findByProductId(productId: Long): List<ProductAttributeEntity> {
+        return table.select { table.productId eq productId }.map { fromSqlResultRow(it) }
+    }
 }

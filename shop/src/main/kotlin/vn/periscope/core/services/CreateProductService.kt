@@ -23,7 +23,7 @@ class CreateProductService(
     private val getProductAttributeUseCase: GetProductAttributeUseCase
 ) : CreateProductUseCase {
 
-    override suspend fun createProduct(entry: ProductEntry): Product {
+    override suspend fun create(entry: ProductEntry): Product {
         val galleries = createGalleries(entry.galleries)
         val attributes = createAttribute(entry.attributes)
         val id = getProductEntryPort.getNextSeriesId()

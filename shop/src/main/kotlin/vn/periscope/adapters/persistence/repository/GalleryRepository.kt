@@ -1,12 +1,10 @@
 package vn.periscope.adapters.persistence.repository
 
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.batchInsert
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.update
+import org.jetbrains.exposed.sql.*
 import vn.periscope.adapters.persistence.entity.GalleryEntity
 import vn.periscope.adapters.persistence.entity.GalleryTable
 import vn.periscope.core.domain.Gallery
+import vn.periscope.share.statics.GalleryTargetObjectType
 import java.time.Instant
 
 object GalleryRepository {
@@ -57,5 +55,13 @@ object GalleryRepository {
             it[position] = entity.position
             it[updatedAt] = Instant.ofEpochMilli(entity.updatedAt.toEpochMilliseconds())
         })
+    }
+
+    fun findByTargetObjectTypeAndTargetObjectId(
+        targetObjectType: GalleryTargetObjectType,
+        targetObjectId: Long
+    ): List<GalleryEntity> {
+        return table.select { table.targetObjectType eq targetObjectType and (table.targetObjectId eq targetObjectId) }
+            .map { fromSqlResultRow(it) }
     }
 }

@@ -3,7 +3,9 @@ package vn.periscope.adapters.persistence
 import kotlinx.datetime.Clock
 import vn.periscope.adapters.persistence.entity.*
 import vn.periscope.adapters.persistence.repository.*
+import vn.periscope.core.domain.Gallery
 import vn.periscope.core.domain.Product
+import vn.periscope.core.domain.ProductAttribute
 import vn.periscope.ports.out.*
 import vn.periscope.share.statics.GalleryTargetObjectType
 import kotlin.streams.toList
@@ -14,11 +16,7 @@ class ProductPersistenceAdapter(
     private val attributeRepository: ProductAttributeRepository,
     private val idProviderRepository: IdProviderRepository,
     private val productCategoryRepository: ProductCategoryRepository
-) : GetProductEntryPort,
-    CreateProductEntryPort,
-    UpdateProductEntryPort,
-    DeleteProductEntryPort,
-    FilterProductEntryPort,
+) : GetProductEntryPort, CreateProductEntryPort, UpdateProductEntryPort, DeleteProductEntryPort, FilterProductEntryPort,
     SearchProductEntryPort {
     override fun filter(): List<Product> {
         return listOf()
@@ -28,12 +26,67 @@ class ProductPersistenceAdapter(
         return listOf()
     }
 
-    override fun findById(id: Long): Product? {
-        return null
+    override fun findById(id: Long): Product {
+        val entity = productRepository.findById(id)
+        return toProduct(entity)
     }
 
     override fun getNextSeriesId(): Long {
         return idProviderRepository.getNextSeriesId(ProductIdSequence.sequence)
+    }
+
+    override fun findByIdAndBusinessId(id: Long, businessId: Long): Product {
+        val entity = productRepository.findByIdAndBusinessId(id, businessId)
+        return toProduct(entity)
+    }
+
+    private fun toProduct(entity: ProductEntity): Product {
+        val product = Product(
+            id = entity.id,
+            nid = entity.nid,
+            businessId = entity.businessId,
+            taxonomy = entity.taxonomy,
+            managementMethodology = entity.managementMethodology,
+            name = entity.name,
+            brandId = entity.brandId,
+            categoryIds = setOf(),
+            galleries = listOf(),
+            attributes = listOf(),
+            industryId = entity.industryId,
+            createdAt = entity.createdAt,
+            updatedAt = entity.updatedAt,
+        )
+        fetchGalleriesToProduct(product)
+        fetchAttributesToProduct(product)
+        fetchCategoriesToProduct(product)
+        return product
+    }
+
+    private fun fetchGalleriesToProduct(product: Product) {
+        val entities =
+            galleryRepository.findByTargetObjectTypeAndTargetObjectId(GalleryTargetObjectType.PRODUCT, product.id)
+        val galleries = entities.stream().map {
+            Gallery(
+                it.id, it.nid, it.storeId, it.position, it.createdAt, it.createdAt
+            )
+        }.toList()
+        product.galleries?.toMutableList()?.addAll(galleries)
+    }
+
+    private fun fetchAttributesToProduct(product: Product) {
+        val entities = attributeRepository.findByProductId(product.id)
+        val attributes = entities.stream().map {
+            ProductAttribute(
+                it.id, it.nid, it.name, it.values, it.createdAt, it.createdAt
+            )
+        }.toList()
+        product.attributes?.toMutableList()?.addAll(attributes)
+    }
+
+    private fun fetchCategoriesToProduct(product: Product) {
+        val entities = productCategoryRepository.findByProductId(product.id)
+        val categoryIds = entities.stream().map { it.categoryId }.toList()
+        product.categoryIds?.toMutableList()?.addAll(categoryIds)
     }
 
     override fun insert(product: Product) {
@@ -45,8 +98,8 @@ class ProductPersistenceAdapter(
                 taxonomy = product.taxonomy,
                 managementMethodology = product.managementMethodology,
                 name = product.name,
-                brandId = product.brandId.let { 0 },
-                industryId = product.industryId.let { 0 },
+                brandId = product.brandId ?: 0,
+                industryId = product.industryId ?: 0,
                 createdAt = product.createdAt,
                 updatedAt = product.updatedAt,
             )
@@ -78,14 +131,7 @@ class ProductPersistenceAdapter(
         if (product.attributes.isNullOrEmpty()) return
         val entities = product.attributes.stream().map {
             ProductAttributeEntity(
-                it.id,
-                it.nid,
-                product.businessId,
-                product.id,
-                it.name,
-                it.values,
-                it.createdAt,
-                it.createdAt
+                it.id, it.nid, product.businessId, product.id, it.name, it.values, it.createdAt, it.createdAt
             )
         }.toList()
         attributeRepository.batchInsert(entities)
@@ -95,10 +141,7 @@ class ProductPersistenceAdapter(
         if (product.categoryIds.isNullOrEmpty()) return
         val entities = product.categoryIds.stream().map {
             ProductCategoryEntity(
-                product.businessId,
-                product.id,
-                it,
-                Clock.System.now()
+                product.businessId, product.id, it, Clock.System.now()
             )
         }.toList()
         productCategoryRepository.batchInsert(entities)

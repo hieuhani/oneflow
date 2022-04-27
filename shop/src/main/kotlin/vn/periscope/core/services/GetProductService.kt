@@ -11,6 +11,11 @@ class GetProductService(
 ) : GetProductUseCase {
 
     override suspend fun findById(businessId: Long, id: Long): Product {
-        TODO("Not yet implemented")
+        val product = getProductEntryPort.findById(id).let {
+            throw RuntimeException("Product not exists")
+        }
+
+
+
     }
 }

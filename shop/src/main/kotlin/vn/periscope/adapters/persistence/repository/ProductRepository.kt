@@ -1,8 +1,10 @@
 package vn.periscope.adapters.persistence.repository
 
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import vn.periscope.adapters.persistence.entity.ProductEntity
 import vn.periscope.adapters.persistence.entity.ProductTable
+import vn.periscope.core.domain.Product
 import java.time.Instant
 
 object ProductRepository {
@@ -61,5 +63,9 @@ object ProductRepository {
         return table.deleteWhere {
             table.id eq id
         } == 1
+    }
+
+    fun findByIdAndBusinessId(id: Long, businessId: Long): ProductEntity {
+        return table.select { table.id eq id and (table.businessId eq businessId) }.first().let { fromSqlResultRow(it) }
     }
 }

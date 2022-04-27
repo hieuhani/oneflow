@@ -1,11 +1,11 @@
 package vn.periscope.adapters.api.rest.vm.request
 
+import kotlinx.serialization.Serializable
 import vn.periscope.share.statics.ProductManagementMethodology
 import vn.periscope.share.statics.ProductTaxonomy
-import kotlinx.serialization.Serializable
 
 @Serializable
-data class CreateProductRequest(
+data class UpdateProductRequest(
     val taxonomy: ProductTaxonomy,
     val managementMethodology: ProductManagementMethodology,
     val code: String? = "",
@@ -13,19 +13,21 @@ data class CreateProductRequest(
     val brandId: Long? = 0,
     val industryId: Long? = 0,
     val categoryIds: Set<Long>? = setOf(),
-    val galleries: List<CreateGalleryRequest>? = listOf(),
-    val attributes: List<CreateAttributeRequest>? = listOf(),
-){
+    val galleries: List<UpdateGalleryRequest>? = listOf(),
+    val attributes: List<UpdateAttributeRequest>? = listOf(),
+) {
     @Serializable
-    data class CreateGalleryRequest(
+    data class UpdateGalleryRequest(
+        val id: Long?,
         val storeId: Long,
         val default: Boolean,
         val position: Int,
     )
+
     @Serializable
-    data class CreateAttributeRequest(
+    data class UpdateAttributeRequest(
+        val id: Long?,
         val name: String,
         val values: Set<String>,
     )
-
 }
