@@ -16,6 +16,7 @@ object ProductTable : Table(name = "product") {
     val industryId = long("industry_id").index()
     val createdAt = timestamp("created_at").index()
     val updatedAt = timestamp("updated_at").index()
+    val deleted = bool("deleted").index().default(false)
 }
 
 

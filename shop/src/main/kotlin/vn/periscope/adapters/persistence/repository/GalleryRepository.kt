@@ -57,11 +57,27 @@ object GalleryRepository {
         })
     }
 
-    fun findByTargetObjectTypeAndTargetObjectId(
-        targetObjectType: GalleryTargetObjectType,
-        targetObjectId: Long
+    fun mustFilter(
+        ids: List<Long> = listOf(),
+        targetObjectType: GalleryTargetObjectType = GalleryTargetObjectType.UNKNOWN,
+        targetObjectIds: List<Long> = listOf(),
     ): List<GalleryEntity> {
-        return table.select { table.targetObjectType eq targetObjectType and (table.targetObjectId eq targetObjectId) }
-            .map { fromSqlResultRow(it) }
+        val query = table.selectAll()
+        if (ids.isNotEmpty()) query.andWhere { table.id inList ids }
+        if (targetObjectType != GalleryTargetObjectType.UNKNOWN) query.andWhere { table.targetObjectType eq targetObjectType }
+        if (targetObjectIds.isNotEmpty()) query.andWhere { table.targetObjectId inList targetObjectIds }
+        return query.map { fromSqlResultRow(it) }
+    }
+
+    fun shouldFilter(
+        ids: List<Long> = listOf(),
+        targetObjectType: GalleryTargetObjectType = GalleryTargetObjectType.UNKNOWN,
+        targetObjectIds: List<Long> = listOf(),
+    ): List<GalleryEntity> {
+        val query = table.selectAll()
+        if (ids.isNotEmpty()) query.orWhere { table.id inList ids }
+        if (targetObjectType != GalleryTargetObjectType.UNKNOWN) query.orWhere { table.targetObjectType eq targetObjectType }
+        if (targetObjectIds.isNotEmpty()) query.orWhere { table.targetObjectId inList targetObjectIds }
+        return query.map { fromSqlResultRow(it) }
     }
 }

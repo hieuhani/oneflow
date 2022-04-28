@@ -7,7 +7,6 @@ import kotlinx.serialization.Serializable
 data class GalleryResponse(
     val id: Long,
     val storeId: Long,
-    val default: Boolean,
     val position: Int,
     val createdAt: Instant,
     val updatedAt: Instant

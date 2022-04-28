@@ -46,12 +46,12 @@ val coreModule = module(createdAtStart = true) {
     )
 
     single {
-        FilterProductService(
+        FilterAndSearchProductService(
             transactionService = get(),
-            filterProductEntryPort = get(),
+            filterAndSearchProductEntryPort = get(),
         )
     } binds arrayOf(
-        FilterProductUseCase::class,
+        FilterAndSearchProductUseCase::class,
     )
 
     single {

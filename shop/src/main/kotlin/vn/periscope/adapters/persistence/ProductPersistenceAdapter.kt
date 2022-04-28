@@ -16,13 +16,8 @@ class ProductPersistenceAdapter(
     private val attributeRepository: ProductAttributeRepository,
     private val idProviderRepository: IdProviderRepository,
     private val productCategoryRepository: ProductCategoryRepository
-) : GetProductEntryPort, CreateProductEntryPort, UpdateProductEntryPort, DeleteProductEntryPort, FilterProductEntryPort,
-    SearchProductEntryPort {
+) : GetProductEntryPort, CreateProductEntryPort, UpdateProductEntryPort, DeleteProductEntryPort, FilterAndSearchProductEntryPort{
     override fun filter(): List<Product> {
-        return listOf()
-    }
-
-    override fun search(): List<Product> {
         return listOf()
     }
 
@@ -64,7 +59,10 @@ class ProductPersistenceAdapter(
 
     private fun fetchGalleriesToProduct(product: Product) {
         val entities =
-            galleryRepository.findByTargetObjectTypeAndTargetObjectId(GalleryTargetObjectType.PRODUCT, product.id)
+            galleryRepository.mustFilter(
+                targetObjectType = GalleryTargetObjectType.PRODUCT,
+                targetObjectIds = listOf(product.id),
+            )
         val galleries = entities.stream().map {
             Gallery(
                 it.id, it.nid, it.storeId, it.position, it.createdAt, it.createdAt
@@ -74,7 +72,9 @@ class ProductPersistenceAdapter(
     }
 
     private fun fetchAttributesToProduct(product: Product) {
-        val entities = attributeRepository.findByProductId(product.id)
+        val entities = attributeRepository.mustFilter(
+            productIds = listOf(product.id)
+        )
         val attributes = entities.stream().map {
             ProductAttribute(
                 it.id, it.nid, it.name, it.values, it.createdAt, it.createdAt
@@ -151,7 +151,7 @@ class ProductPersistenceAdapter(
         return
     }
 
-    override fun delete(id: Long): Boolean {
-        return productRepository.delete(id)
+    override fun delete(id: Long, businessId: Long): Boolean {
+       return productRepository.delete(id, businessId)
     }
 }

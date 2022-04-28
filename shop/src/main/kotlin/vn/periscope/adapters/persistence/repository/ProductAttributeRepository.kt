@@ -76,7 +76,17 @@ object ProductAttributeRepository {
         }
     }
 
-    fun findByProductId(productId: Long): List<ProductAttributeEntity> {
-        return table.select { table.productId eq productId }.map { fromSqlResultRow(it) }
+    fun mustFilter(ids: List<Long> = listOf(), productIds: List<Long> = listOf()): List<ProductAttributeEntity> {
+        val query = table.selectAll()
+        if (ids.isNotEmpty()) query.andWhere { table.id inList ids }
+        if (productIds.isNotEmpty()) query.andWhere { table.productId inList productIds }
+        return query.map { fromSqlResultRow(it) }
+    }
+
+    fun shouldFilter(ids: List<Long> = listOf(), productIds: List<Long> = listOf()): List<ProductAttributeEntity> {
+        val query = table.selectAll()
+        if (ids.isNotEmpty()) query.orWhere { table.id inList ids }
+        if (productIds.isNotEmpty()) query.orWhere { table.productId inList productIds }
+        return query.map { fromSqlResultRow(it) }
     }
 }

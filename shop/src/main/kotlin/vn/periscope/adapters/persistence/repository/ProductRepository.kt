@@ -39,6 +39,7 @@ object ProductRepository {
             it[industryId] = entity.industryId
             it[createdAt] = Instant.ofEpochMilli(entity.createdAt.toEpochMilliseconds())
             it[updatedAt] = Instant.ofEpochMilli(entity.updatedAt.toEpochMilliseconds())
+            it[deleted] = false
         }
     }
 
@@ -51,7 +52,9 @@ object ProductRepository {
         })
     }
 
-    fun filter(): List<ProductEntity> {
+    fun filter(
+
+    ): List<ProductEntity> {
         return table.selectAll().map { fromSqlResultRow(it) }
     }
 
@@ -59,10 +62,11 @@ object ProductRepository {
         return table.selectAll().map { fromSqlResultRow(it) }
     }
 
-    fun delete(id: Long): Boolean {
-        return table.deleteWhere {
-            table.id eq id
-        } == 1
+    fun delete(id: Long, businessId: Long): Boolean {
+        val affectedRows = table.update({ table.id eq id and (table.businessId eq businessId) }, null, {
+            it[deleted] = true
+        })
+        return affectedRows > 0
     }
 
     fun findByIdAndBusinessId(id: Long, businessId: Long): ProductEntity {

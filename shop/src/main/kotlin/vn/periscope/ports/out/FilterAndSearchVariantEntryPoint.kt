@@ -2,6 +2,6 @@ package vn.periscope.ports.out
 
 import vn.periscope.ports.models.VariantEntry
 
-interface FilterVariantEntryPoint {
+interface FilterAndSearchVariantEntryPoint {
     fun filter(): List<VariantEntry>
 }

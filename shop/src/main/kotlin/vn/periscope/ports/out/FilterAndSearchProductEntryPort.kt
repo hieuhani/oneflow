@@ -2,6 +2,6 @@ package vn.periscope.ports.out
 
 import vn.periscope.core.domain.Product
 
-interface FilterProductEntryPort {
+interface FilterAndSearchProductEntryPort {
     fun filter(): List<Product>
 }

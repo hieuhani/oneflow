@@ -45,8 +45,7 @@ val adapterModule = module(createdAtStart = true) {
         CreateProductEntryPort::class,
         UpdateProductEntryPort::class,
         DeleteProductEntryPort::class,
-        FilterProductEntryPort::class,
-        SearchProductEntryPort::class,
+        FilterAndSearchProductEntryPort::class,
     )
 
     single {
