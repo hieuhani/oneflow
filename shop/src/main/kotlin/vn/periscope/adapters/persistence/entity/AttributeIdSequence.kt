@@ -2,9 +2,9 @@ package vn.periscope.adapters.persistence.entity
 
 import org.jetbrains.exposed.sql.Sequence
 
-object ProductAttributeIdSequence {
+object AttributeIdSequence {
     val sequence = Sequence(
-        name = "product_attribute_id_seq",
+        name = "attribute_id_seq",
         startWith = 1,
         incrementBy = 1,
         minValue = 1,

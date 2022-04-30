@@ -1,13 +1,13 @@
 package vn.periscope.adapters.api.rest.vm.request
 
 import kotlinx.serialization.Serializable
-import vn.periscope.share.statics.ProductManagementMethodology
+import vn.periscope.share.statics.ProductType
 import vn.periscope.share.statics.ProductTaxonomy
 
 @Serializable
 data class UpdateProductRequest(
     val taxonomy: ProductTaxonomy,
-    val managementMethodology: ProductManagementMethodology,
+    val type: ProductType,
     val code: String? = "",
     val name: String,
     val brandId: Long? = 0,

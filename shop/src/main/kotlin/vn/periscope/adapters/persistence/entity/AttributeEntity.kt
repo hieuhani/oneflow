@@ -1,15 +1,15 @@
 package vn.periscope.adapters.persistence.entity
 
 import kotlinx.datetime.Instant
-import java.util.*
+import vn.periscope.share.statics.ObjectReferenceType
+import java.util.UUID
 
-data class ProductAttributeEntity(
+data class AttributeEntity(
     val id: Long,
-    val nid: UUID,
     val businessId: Long,
-    val productId: Long,
+    val referNID: UUID,
     val name: String,
-    val values: Set<String>,
     val createdAt: Instant,
     val updatedAt: Instant,
+    val nid: UUID,
 )

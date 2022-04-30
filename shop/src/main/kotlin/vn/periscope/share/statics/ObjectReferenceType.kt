@@ -1,5 +1,5 @@
 package vn.periscope.share.statics
 
-enum class GalleryTargetObjectType {
+enum class ObjectReferenceType {
     PRODUCT, VARIANT, UNKNOWN
 }

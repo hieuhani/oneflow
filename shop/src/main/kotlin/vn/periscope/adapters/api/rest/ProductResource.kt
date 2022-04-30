@@ -6,12 +6,13 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import vn.periscope.adapters.api.rest.vm.request.CreateProductRequest
+import vn.periscope.adapters.api.rest.vm.request.UpdateProductRequest
 import vn.periscope.adapters.api.rest.vm.response.GalleryResponse
 import vn.periscope.adapters.api.rest.vm.response.ProductAttributeResponse
 import vn.periscope.adapters.api.rest.vm.response.ProductResponse
 import vn.periscope.core.domain.Gallery
 import vn.periscope.core.domain.Product
-import vn.periscope.core.domain.ProductAttribute
+import vn.periscope.core.domain.Attribute
 import vn.periscope.extentions.inject
 import vn.periscope.ports.*
 import vn.periscope.ports.models.GalleryEntry
@@ -40,10 +41,10 @@ class ProductResource(application: Application) {
                     val request: CreateProductRequest = call.receive()
                     val galleryEntries = buildGalleryEntry(request.galleries)
                     val attributeEntries = buildAttributeEntry(request.attributes)
+                    val businessId = call.longHeader(BUSINESS_ID_HEADER)
                     val productEntry = ProductEntry(
-                        businessId = call.longHeader(BUSINESS_ID_HEADER),
                         taxonomy = request.taxonomy,
-                        managementMethodology = request.managementMethodology,
+                        type = request.type,
                         name = request.name,
                         brandId = request.brandId,
                         industryId = request.industryId,
@@ -55,14 +56,14 @@ class ProductResource(application: Application) {
                     call.respond(HttpStatusCode.Created, toProductResponse(product))
                 }
 
-//                put("/products/{id}") {
-//                    val id = call.longParameter("id")
-//                    val businessId = call.longHeader(BUSINESS_ID_HEADER)
-//                    val request: UpdateProductRequest = call.receive()
-//                    val product = getProductUseCase.findById(businessId, id)
-//                    val content = updateContentUseCase.update(id, product)
-//                    call.respond(ContentResponseDto.fromDomainModel(content))
-//                }
+                put("/products/{id}") {
+                    val id = call.longParameter("id")
+                    val businessId = call.longHeader(BUSINESS_ID_HEADER)
+                    val request: UpdateProductRequest = call.receive()
+                    val product = getProductUseCase.findById(businessId, id)
+                    val content = updateContentUseCase.update(id, product)
+                    call.respond(ContentResponseDto.fromDomainModel(content))
+                }
 
                 delete("/products/{id}") {
                     val id = call.longParameter("id")
@@ -115,9 +116,8 @@ class ProductResource(application: Application) {
         val attributeResponses = product.attributes.orEmpty().stream().map { toAttributeResponse(it) }.toList()
         return ProductResponse(
             id = product.id,
-            businessId = product.businessId,
             taxonomy = product.taxonomy,
-            managementMethodology = product.managementMethodology,
+            type = product.type,
             name = product.name,
             brandId = product.brandId,
             industryId = product.industryId,
@@ -137,7 +137,7 @@ class ProductResource(application: Application) {
         updatedAt = gallery.updatedAt,
     )
 
-    private fun toAttributeResponse(attribute: ProductAttribute) = ProductAttributeResponse(
+    private fun toAttributeResponse(attribute: Attribute) = ProductAttributeResponse(
         id = attribute.id,
         name = attribute.name,
         values = attribute.values,

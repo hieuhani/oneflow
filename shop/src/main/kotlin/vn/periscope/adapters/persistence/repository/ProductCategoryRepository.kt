@@ -4,8 +4,7 @@ import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
-import vn.periscope.adapters.persistence.entity.ProductAttributeEntity
-import vn.periscope.adapters.persistence.entity.ProductAttributeTable
+import vn.periscope.adapters.persistence.entity.AttributeTable
 import vn.periscope.adapters.persistence.entity.ProductCategoryEntity
 import vn.periscope.adapters.persistence.entity.ProductCategoryTable
 import java.time.Instant
@@ -33,7 +32,7 @@ object ProductCategoryRepository {
         id = resultRow[ProductCategoryTable.id].value,
         productId = resultRow[ProductCategoryTable.productId],
         categoryId = resultRow[ProductCategoryTable.categoryId],
-        createdAt = kotlinx.datetime.Instant.fromEpochMilliseconds(resultRow[ProductAttributeTable.createdAt].toEpochMilli()),
+        createdAt = kotlinx.datetime.Instant.fromEpochMilliseconds(resultRow[AttributeTable.createdAt].toEpochMilli()),
     )
 
     fun findByProductId(productId: Long): List<ProductCategoryEntity> {

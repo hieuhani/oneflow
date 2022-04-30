@@ -1,13 +1,9 @@
 package vn.periscope.adapters.persistence
 
 import vn.periscope.adapters.persistence.entity.GalleryIdSequence
-import vn.periscope.adapters.persistence.entity.ProductIdSequence
 import vn.periscope.adapters.persistence.repository.GalleryRepository
 import vn.periscope.adapters.persistence.repository.IdProviderRepository
-import vn.periscope.adapters.persistence.repository.ProductAttributeRepository
-import vn.periscope.adapters.persistence.repository.ProductRepository
 import vn.periscope.core.domain.Gallery
-import vn.periscope.core.domain.Product
 import vn.periscope.ports.out.*
 
 class GalleryPersistenceAdapter(

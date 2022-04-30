@@ -31,15 +31,6 @@ internal fun ApplicationCall.stringRequestParameter(name: String): String {
     }
 }
 
-internal fun <E> ApplicationCall.listParameter(name: String): List<E> {
-    return try {
-        getRequestParameter(name)
-    } catch (e: NumberFormatException) {
-        throw RuntimeException("longParameter")
-    }
-}
-
-
 internal fun ApplicationCall.longHeader(name: String):Long{
     return try {
         getHeader(name).toLong()

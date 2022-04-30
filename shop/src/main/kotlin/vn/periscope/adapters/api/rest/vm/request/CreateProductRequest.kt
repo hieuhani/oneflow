@@ -1,13 +1,13 @@
 package vn.periscope.adapters.api.rest.vm.request
 
-import vn.periscope.share.statics.ProductManagementMethodology
+import vn.periscope.share.statics.ProductType
 import vn.periscope.share.statics.ProductTaxonomy
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class CreateProductRequest(
     val taxonomy: ProductTaxonomy,
-    val managementMethodology: ProductManagementMethodology,
+    val type: ProductType,
     val code: String? = "",
     val name: String,
     val brandId: Long? = 0,

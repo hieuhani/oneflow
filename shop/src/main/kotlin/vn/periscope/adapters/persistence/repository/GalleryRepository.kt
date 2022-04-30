@@ -4,7 +4,7 @@ import org.jetbrains.exposed.sql.*
 import vn.periscope.adapters.persistence.entity.GalleryEntity
 import vn.periscope.adapters.persistence.entity.GalleryTable
 import vn.periscope.core.domain.Gallery
-import vn.periscope.share.statics.GalleryTargetObjectType
+import vn.periscope.share.statics.ObjectReferenceType
 import java.time.Instant
 
 object GalleryRepository {
@@ -14,8 +14,8 @@ object GalleryRepository {
         id = resultRow[GalleryTable.id].value,
         nid = resultRow[GalleryTable.nid],
         businessId = resultRow[GalleryTable.businessId],
-        targetObjectType = resultRow[GalleryTable.targetObjectType],
-        targetObjectId = resultRow[GalleryTable.targetObjectId],
+        referenceType = resultRow[GalleryTable.referenceType],
+        referenceId = resultRow[GalleryTable.referenceId],
         storeId = resultRow[GalleryTable.storeId],
         position = resultRow[GalleryTable.position],
         createdAt = kotlinx.datetime.Instant.fromEpochMilliseconds(resultRow[GalleryTable.createdAt].toEpochMilli()),
@@ -27,8 +27,8 @@ object GalleryRepository {
             it[id] = entity.id
             it[nid] = entity.nid
             it[businessId] = entity.businessId
-            it[targetObjectType] = entity.targetObjectType
-            it[targetObjectId] = entity.targetObjectId
+            it[referenceType] = entity.referenceType
+            it[referenceId] = entity.referenceId
             it[storeId] = entity.storeId
             it[position] = entity.position
             it[createdAt] = Instant.ofEpochMilli(entity.createdAt.toEpochMilliseconds())
@@ -41,8 +41,8 @@ object GalleryRepository {
             this[GalleryTable.id] = entity.id
             this[GalleryTable.nid] = entity.nid
             this[GalleryTable.businessId] = entity.businessId
-            this[GalleryTable.targetObjectType] = entity.targetObjectType
-            this[GalleryTable.targetObjectId] = entity.targetObjectId
+            this[GalleryTable.referenceType] = entity.referenceType
+            this[GalleryTable.referenceId] = entity.referenceId
             this[GalleryTable.storeId] = entity.storeId
             this[GalleryTable.position] = entity.position
             this[GalleryTable.createdAt] = Instant.ofEpochMilli(entity.createdAt.toEpochMilliseconds())
@@ -57,27 +57,15 @@ object GalleryRepository {
         })
     }
 
-    fun mustFilter(
-        ids: List<Long> = listOf(),
-        targetObjectType: GalleryTargetObjectType = GalleryTargetObjectType.UNKNOWN,
-        targetObjectIds: List<Long> = listOf(),
-    ): List<GalleryEntity> {
-        val query = table.selectAll()
-        if (ids.isNotEmpty()) query.andWhere { table.id inList ids }
-        if (targetObjectType != GalleryTargetObjectType.UNKNOWN) query.andWhere { table.targetObjectType eq targetObjectType }
-        if (targetObjectIds.isNotEmpty()) query.andWhere { table.targetObjectId inList targetObjectIds }
-        return query.map { fromSqlResultRow(it) }
+    fun findByReferences(referenceType: ObjectReferenceType, referenceIds: List<Long>): List<GalleryEntity> {
+        return table.select { table.referenceType eq referenceType and (table.referenceId inList referenceIds) }
+            .map { fromSqlResultRow(it) }
     }
 
-    fun shouldFilter(
-        ids: List<Long> = listOf(),
-        targetObjectType: GalleryTargetObjectType = GalleryTargetObjectType.UNKNOWN,
-        targetObjectIds: List<Long> = listOf(),
-    ): List<GalleryEntity> {
-        val query = table.selectAll()
-        if (ids.isNotEmpty()) query.orWhere { table.id inList ids }
-        if (targetObjectType != GalleryTargetObjectType.UNKNOWN) query.orWhere { table.targetObjectType eq targetObjectType }
-        if (targetObjectIds.isNotEmpty()) query.orWhere { table.targetObjectId inList targetObjectIds }
-        return query.map { fromSqlResultRow(it) }
+    fun findByReference(referenceType: ObjectReferenceType, referenceId: Long): List<GalleryEntity> {
+        return table.select { table.referenceType eq referenceType and (table.referenceId eq referenceId) }
+            .map { fromSqlResultRow(it) }
     }
+
+
 }

@@ -3,9 +3,8 @@ package vn.periscope.core.domain
 import kotlinx.datetime.Instant
 import java.util.UUID
 
-data class ProductAttribute (
+data class Attribute (
     val id: Long,
-    val nid: UUID,
     val name: String,
     val values: Set<String>,
     val createdAt: Instant,

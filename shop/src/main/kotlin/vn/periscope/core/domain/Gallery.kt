@@ -5,7 +5,6 @@ import java.util.*
 
 data class Gallery(
     val id: Long,
-    val nid: UUID,
     val storeId: Long,
     val position: Int,
     val createdAt: Instant,

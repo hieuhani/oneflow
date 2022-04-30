@@ -1,7 +1,6 @@
 package vn.periscope.adapters.persistence
 
 import kotlinx.coroutines.runBlocking
-import org.jetbrains.exposed.sql.Sequence
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Transaction
@@ -19,13 +18,13 @@ class DatabaseConnector(
     private val tables = arrayOf(
         ProductTable ,
         GalleryTable,
-        ProductAttributeTable
+        AttributeTable
     )
 
     private val sequences = arrayOf(
         ProductIdSequence.sequence,
         GalleryIdSequence.sequence,
-        ProductAttributeIdSequence.sequence,
+        AttributeIdSequence.sequence,
         VariantIdSequence.sequence
     )
 

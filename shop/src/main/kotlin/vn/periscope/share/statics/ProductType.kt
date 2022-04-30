@@ -1,6 +1,6 @@
 package vn.periscope.share.statics
 
-enum class ProductManagementMethodology {
+enum class ProductType {
     SERIAL,
     LOTS_DATE,
     NORMAL

@@ -1,19 +1,18 @@
 package vn.periscope.core.services
 
 import kotlinx.datetime.Clock
+import vn.periscope.core.domain.Attribute
 import vn.periscope.core.domain.Gallery
 import vn.periscope.core.domain.Product
-import vn.periscope.core.domain.ProductAttribute
-import vn.periscope.ports.TransactionService
 import vn.periscope.ports.CreateProductUseCase
 import vn.periscope.ports.GetGalleryUseCase
 import vn.periscope.ports.GetProductAttributeUseCase
+import vn.periscope.ports.TransactionService
 import vn.periscope.ports.models.GalleryEntry
 import vn.periscope.ports.models.ProductAttributeEntry
 import vn.periscope.ports.models.ProductEntry
 import vn.periscope.ports.out.CreateProductEntryPort
 import vn.periscope.ports.out.GetProductEntryPort
-import java.util.*
 
 class CreateProductService(
     private val transactionService: TransactionService,
@@ -23,16 +22,20 @@ class CreateProductService(
     private val getProductAttributeUseCase: GetProductAttributeUseCase
 ) : CreateProductUseCase {
 
-    override suspend fun create(entry: ProductEntry): Product {
-        val galleries = createGalleries(entry.galleries)
-        val attributes = createAttribute(entry.attributes)
+    override suspend fun create(businessId: Long, entry: ProductEntry): Product {
+        val product = initProduct(entry)
+        save(businessId, product)
+        return product
+    }
+
+    private fun initProduct(entry: ProductEntry): Product {
+        val galleries = initGalleries(entry.galleries)
+        val attributes = initAttribute(entry.attributes)
         val id = getProductEntryPort.getNextSeriesId()
-        val product = Product(
+        return Product(
             id = id,
-            nid = UUID.randomUUID(),
-            businessId = entry.businessId,
             taxonomy = entry.taxonomy,
-            managementMethodology = entry.managementMethodology,
+            type = entry.type,
             name = entry.name,
             brandId = entry.brandId ?: 0,
             industryId = entry.industryId ?: 0,
@@ -42,10 +45,9 @@ class CreateProductService(
             createdAt = Clock.System.now(),
             updatedAt = Clock.System.now(),
         )
-        return storage(product)
     }
 
-    private fun createGalleries(entries: List<GalleryEntry>?): List<Gallery> {
+    private fun initGalleries(entries: List<GalleryEntry>?): List<Gallery> {
         if (entries.isNullOrEmpty()) return listOf()
         val ids = getGalleryUseCase.getNextSeriesIds(entries.size)
         val galleries = listOf<Gallery>()
@@ -53,9 +55,7 @@ class CreateProductService(
             galleries.toMutableList().add(
                 Gallery(
                     id = ids.toMutableList()[index],
-                    nid = UUID.randomUUID(),
                     storeId = galleryEntry.storeId,
-                    default = galleryEntry.default,
                     position = galleryEntry.position,
                     createdAt = Clock.System.now(),
                     updatedAt = Clock.System.now(),
@@ -65,15 +65,14 @@ class CreateProductService(
         return galleries
     }
 
-    private fun createAttribute(entries: List<ProductAttributeEntry>?): List<ProductAttribute> {
+    private fun initAttribute(entries: List<ProductAttributeEntry>?): List<Attribute> {
         if (entries.isNullOrEmpty()) return listOf()
         val ids = getProductAttributeUseCase.getNextSeriesIds(entries.size)
-        val galleries = listOf<ProductAttribute>()
+        val galleries = listOf<Attribute>()
         entries.forEachIndexed { index, attributeEntry ->
             galleries.toMutableList().add(
-                ProductAttribute(
+                Attribute(
                     id = ids.toMutableList()[index],
-                    nid = UUID.randomUUID(),
                     name = attributeEntry.name,
                     values = attributeEntry.values,
                     createdAt = Clock.System.now(),
@@ -84,7 +83,7 @@ class CreateProductService(
         return galleries
     }
 
-    private suspend fun storage(product: Product) = transactionService.transaction {
-        return@transaction createProductEntryPort.insert(product)
+    private suspend fun save(businessId: Long, product: Product) = transactionService.transaction {
+        return@transaction createProductEntryPort.insert(businessId, product)
     }
 }

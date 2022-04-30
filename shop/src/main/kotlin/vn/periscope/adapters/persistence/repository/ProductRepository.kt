@@ -1,10 +1,8 @@
 package vn.periscope.adapters.persistence.repository
 
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import vn.periscope.adapters.persistence.entity.ProductEntity
 import vn.periscope.adapters.persistence.entity.ProductTable
-import vn.periscope.core.domain.Product
 import java.time.Instant
 
 object ProductRepository {
@@ -19,7 +17,7 @@ object ProductRepository {
         nid = resultRow[ProductTable.nid],
         businessId = resultRow[ProductTable.businessId],
         taxonomy = resultRow[ProductTable.taxonomy],
-        managementMethodology = resultRow[ProductTable.managementMethodology],
+        type = resultRow[ProductTable.managementMethodology],
         name = resultRow[ProductTable.name],
         brandId = resultRow[ProductTable.brandId],
         industryId = resultRow[ProductTable.industryId],
@@ -33,7 +31,7 @@ object ProductRepository {
             it[nid] = entity.nid
             it[businessId] = entity.businessId
             it[taxonomy] = entity.taxonomy
-            it[managementMethodology] = entity.managementMethodology
+            it[managementMethodology] = entity.type
             it[name] = entity.name
             it[brandId] = entity.brandId
             it[industryId] = entity.industryId
@@ -69,7 +67,7 @@ object ProductRepository {
         return affectedRows > 0
     }
 
-    fun findByIdAndBusinessId(id: Long, businessId: Long): ProductEntity {
+    fun findById(id: Long, businessId: Long): ProductEntity {
         return table.select { table.id eq id and (table.businessId eq businessId) }.first().let { fromSqlResultRow(it) }
     }
 }
