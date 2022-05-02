@@ -18,7 +18,9 @@ class DatabaseConnector(
     private val tables = arrayOf(
         ProductTable ,
         GalleryTable,
-        AttributeTable
+        AttributeTable,
+        ProductCategoryTable,
+        AttributeValueTable
     )
 
     private val sequences = arrayOf(

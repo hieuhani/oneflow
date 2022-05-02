@@ -10,13 +10,14 @@ import vn.periscope.adapters.api.rest.vm.request.UpdateProductRequest
 import vn.periscope.adapters.api.rest.vm.response.GalleryResponse
 import vn.periscope.adapters.api.rest.vm.response.ProductAttributeResponse
 import vn.periscope.adapters.api.rest.vm.response.ProductResponse
+import vn.periscope.core.domain.Attribute
 import vn.periscope.core.domain.Gallery
 import vn.periscope.core.domain.Product
-import vn.periscope.core.domain.Attribute
+import vn.periscope.core.domain.toEntry
 import vn.periscope.extentions.inject
 import vn.periscope.ports.*
+import vn.periscope.ports.models.AttributeEntry
 import vn.periscope.ports.models.GalleryEntry
-import vn.periscope.ports.models.ProductAttributeEntry
 import vn.periscope.ports.models.ProductEntry
 import kotlin.streams.toList
 
@@ -39,20 +40,9 @@ class ProductResource(application: Application) {
 
                 post("/products") {
                     val request: CreateProductRequest = call.receive()
-                    val galleryEntries = buildGalleryEntry(request.galleries)
-                    val attributeEntries = buildAttributeEntry(request.attributes)
                     val businessId = call.longHeader(BUSINESS_ID_HEADER)
-                    val productEntry = ProductEntry(
-                        taxonomy = request.taxonomy,
-                        type = request.type,
-                        name = request.name,
-                        brandId = request.brandId,
-                        industryId = request.industryId,
-                        categoryIds = request.categoryIds,
-                        galleries = galleryEntries,
-                        attributes = attributeEntries,
-                    )
-                    val product = createProductUseCase.create(productEntry)
+                    val productEntry = toProductEntryForCreate(request)
+                    val product = createProductUseCase.create(businessId, productEntry)
                     call.respond(HttpStatusCode.Created, toProductResponse(product))
                 }
 
@@ -61,8 +51,10 @@ class ProductResource(application: Application) {
                     val businessId = call.longHeader(BUSINESS_ID_HEADER)
                     val request: UpdateProductRequest = call.receive()
                     val product = getProductUseCase.findById(businessId, id)
-                    val content = updateContentUseCase.update(id, product)
-                    call.respond(ContentResponseDto.fromDomainModel(content))
+                    val productEntry = product.toEntry()
+                    toProductEntryForUpdate(request, productEntry)
+                    updateContentUseCase.update(productEntry, product)
+                    call.respond(HttpStatusCode.OK, toProductResponse(product))
                 }
 
                 delete("/products/{id}") {
@@ -73,47 +65,58 @@ class ProductResource(application: Application) {
                 }
 
                 get("/products") {
-                    val categoryIds = call.request.queryParameters[""]
-
-
-
-                    val contents = getProductUseCase.fi(id)
-                    call.respond(contents.map { ContentResponseDto.fromDomainModel(it) })
+                    val businessId = call.longHeader(BUSINESS_ID_HEADER)
+                    val products = filterAndSearchProductUseCase.filterAndSearch(businessId)
+                    call.respond(HttpStatusCode.OK, products.stream().map { toProductResponse(it) }.toList())
                 }
             }
         }
     }
 
-    private fun buildGalleryEntry(requests: List<CreateProductRequest.CreateGalleryRequest>?): List<GalleryEntry> {
+    private fun toProductEntryForCreate(request: CreateProductRequest): ProductEntry {
+        val galleryEntries = toGalleryEntryForCreate(request.galleries)
+        val attributeEntries = toAttributeEntryForCreate(request.attributes)
+        return ProductEntry(
+            taxonomy = request.taxonomy,
+            type = request.type,
+            name = request.name,
+            brandId = request.brandId ?: 0,
+            industryId = request.industryId ?: 0,
+            categoryIds = request.categoryIds ?: setOf(),
+            galleries = galleryEntries,
+            attributes = attributeEntries,
+        )
+    }
+
+    private fun toGalleryEntryForCreate(requests: List<CreateProductRequest.CreateGalleryRequest>?): List<GalleryEntry> {
         if (requests.isNullOrEmpty()) return emptyList()
-        val iterator = requests.iterator()
-        val entries = listOf<GalleryEntry>()
-        iterator.forEach {
-            val galleryEntry = GalleryEntry(
-                storeId = it.storeId,
-                position = it.position,
+        val entries = mutableListOf<GalleryEntry>()
+        for (request in requests) {
+            val entry = GalleryEntry(
+                storeId = request.storeId,
+                position = request.position,
             )
-            entries.toMutableList().add(galleryEntry)
+            entries.add(entry)
         }
         return entries
     }
 
-    private fun buildAttributeEntry(requests: List<CreateProductRequest.CreateAttributeRequest>?): List<ProductAttributeEntry> {
+    private fun toAttributeEntryForCreate(requests: List<CreateProductRequest.CreateAttributeRequest>?): List<AttributeEntry> {
         if (requests.isNullOrEmpty()) return emptyList()
-        val iterator = requests.iterator()
-        val entries = listOf<ProductAttributeEntry>()
-        iterator.forEach {
-            val productAttributeEntry = ProductAttributeEntry(
-                name = it.name, values = it.values
+        val entries = mutableListOf<AttributeEntry>()
+        for (request in requests) {
+            val entry = AttributeEntry(
+                name = request.name,
+                values = request.values
             )
-            entries.toMutableList().add(productAttributeEntry)
+            entries.add(entry)
         }
         return entries
     }
 
     private fun toProductResponse(product: Product): ProductResponse {
-        val galleryResponses = product.galleries.orEmpty().stream().map { toGalleryResponse(it) }.toList()
-        val attributeResponses = product.attributes.orEmpty().stream().map { toAttributeResponse(it) }.toList()
+        val galleryResponses = product.galleries.stream().map { toGalleryResponse(it) }.toList()
+        val attributeResponses = product.attributes.stream().map { toAttributeResponse(it) }.toList()
         return ProductResponse(
             id = product.id,
             taxonomy = product.taxonomy,
@@ -144,4 +147,45 @@ class ProductResource(application: Application) {
         createdAt = attribute.createdAt,
         updatedAt = attribute.updatedAt,
     )
+
+
+    private fun toProductEntryForUpdate(request: UpdateProductRequest, productEntry: ProductEntry) {
+        productEntry.name = request.name
+        productEntry.brandId = request.brandId ?: 0
+        productEntry.brandId = request.industryId ?: 0
+        productEntry.categoryIds = request.categoryIds ?: setOf()
+        val galleryEntries = toGalleryEntryForUpdate(request.galleries)
+        productEntry.galleries = galleryEntries
+        val attributeEntries = toAttributeEntryForUpdate(request.attributes)
+        productEntry.attributes = attributeEntries
+    }
+
+    private fun toGalleryEntryForUpdate(requests: List<UpdateProductRequest.UpdateGalleryRequest>?): List<GalleryEntry> {
+        if (requests.isNullOrEmpty()) return emptyList()
+        val entries = mutableListOf<GalleryEntry>()
+        for (request in requests) {
+            val entry = GalleryEntry(
+                id = request.id,
+                storeId = request.storeId,
+                position = request.position,
+            )
+            entries.add(entry)
+        }
+        return entries
+    }
+
+
+    private fun toAttributeEntryForUpdate(requests: List<UpdateProductRequest.UpdateAttributeRequest>?): List<AttributeEntry> {
+        if (requests.isNullOrEmpty()) return emptyList()
+        val entries = mutableListOf<AttributeEntry>()
+        for (request in requests) {
+            val entry = AttributeEntry(
+                id = request.id,
+                name = request.name,
+                values = request.values
+            )
+            entries.add(entry)
+        }
+        return entries
+    }
 }

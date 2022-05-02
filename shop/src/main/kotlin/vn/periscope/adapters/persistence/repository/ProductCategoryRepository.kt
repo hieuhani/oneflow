@@ -1,17 +1,14 @@
 package vn.periscope.adapters.persistence.repository
 
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.batchInsert
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import vn.periscope.adapters.persistence.entity.AttributeTable
 import vn.periscope.adapters.persistence.entity.ProductCategoryEntity
 import vn.periscope.adapters.persistence.entity.ProductCategoryTable
 import java.time.Instant
 
-object ProductCategoryRepository {
-    private val table = ProductCategoryTable
-
+class ProductCategoryRepository(
+    private val table: ProductCategoryTable
+) {
     fun insert(entity: ProductCategoryEntity) {
         table.insert {
             it[productId] = entity.productId
@@ -36,6 +33,10 @@ object ProductCategoryRepository {
     )
 
     fun findByProductId(productId: Long): List<ProductCategoryEntity> {
-        return table.select { table.productId eq productId }.map { fromSqlResultRow(it) }
+        return table.select { table.productId eq productId}.map { fromSqlResultRow(it) }
+    }
+
+    fun findByProductIdIn(productIds: List<Long>): List<ProductCategoryEntity> {
+        return table.select { table.productId inList productIds }.map { fromSqlResultRow(it) }
     }
 }

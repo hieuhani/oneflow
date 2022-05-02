@@ -8,7 +8,7 @@ data class VariantEntry(
     val sku: String,
     val barcode: String? = "",
     val qrcode: String? = "",
-    val status: VariantStatus? = VariantStatus.ACTIVE,
+    val status: VariantStatus? = VariantStatus.DELETED,
     val prices: List<VariantPriceEntry>,
     val attribute: List<VariantAttributeEntry>,
     val galleries: List<GalleryEntry>? = listOf(),

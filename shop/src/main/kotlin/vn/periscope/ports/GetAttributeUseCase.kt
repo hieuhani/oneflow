@@ -1,5 +1,5 @@
 package vn.periscope.ports
 
-interface GetProductAttributeUseCase {
+interface GetAttributeUseCase {
     fun getNextSeriesIds(quantity: Int): Set<Long>
 }

@@ -1,5 +1,6 @@
 package vn.periscope.core
 
+import org.koin.dsl.bind
 import org.koin.dsl.binds
 import org.koin.dsl.module
 import vn.periscope.core.services.*
@@ -7,24 +8,40 @@ import vn.periscope.ports.*
 
 val coreModule = module(createdAtStart = true) {
     single {
+        GetProductService(
+            transactionService = get(),
+            getProductEntryPort = get()
+        )
+    } bind (
+            GetProductUseCase::class
+            )
+
+    single {
+        GetGalleryService(
+            getGalleryEntryPort = get()
+        )
+    } bind (
+            GetGalleryUseCase::class
+            )
+
+    single {
+        GetAttributeService(
+            getAttributeEntryPoint = get()
+        )
+    } bind (
+            GetAttributeUseCase::class
+            )
+
+    single {
         CreateProductService(
             transactionService = get(),
             createProductEntryPort = get(),
             getProductEntryPort = get(),
             getGalleryUseCase = get(),
-            getProductAttributeUseCase = get()
+            getAttributeUseCase = get()
         )
     } binds arrayOf(
         CreateProductUseCase::class,
-    )
-
-    single {
-        GetProductService(
-            transactionService = get(),
-            getProductEntryPort = get(),
-        )
-    } binds arrayOf(
-        GetProductUseCase::class,
     )
 
     single {
@@ -53,14 +70,4 @@ val coreModule = module(createdAtStart = true) {
     } binds arrayOf(
         FilterAndSearchProductUseCase::class,
     )
-
-    single {
-        SearchProductService(
-            transactionService = get(),
-            searchProductEntryPort = get(),
-        )
-    } binds arrayOf(
-        SearchProductUseCase::class,
-    )
-
 }

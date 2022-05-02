@@ -6,7 +6,7 @@ import vn.periscope.adapters.persistence.repository.IdProviderRepository
 import vn.periscope.core.domain.Gallery
 import vn.periscope.ports.out.*
 
-class GalleryPersistenceAdapter(
+class GetGalleryPersistence(
     private val galleryRepository: GalleryRepository,
     private val idProviderRepository: IdProviderRepository,
 ) : GetGalleryEntryPort{

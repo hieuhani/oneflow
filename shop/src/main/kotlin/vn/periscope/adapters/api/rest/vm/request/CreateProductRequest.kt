@@ -8,7 +8,6 @@ import kotlinx.serialization.Serializable
 data class CreateProductRequest(
     val taxonomy: ProductTaxonomy,
     val type: ProductType,
-    val code: String? = "",
     val name: String,
     val brandId: Long? = 0,
     val industryId: Long? = 0,

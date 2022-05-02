@@ -2,45 +2,82 @@ package vn.periscope.core.domain
 
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import vn.periscope.share.statics.ProductType
+import vn.periscope.ports.models.AttributeEntry
+import vn.periscope.ports.models.GalleryEntry
+import vn.periscope.ports.models.ProductEntry
 import vn.periscope.share.statics.ProductTaxonomy
-import java.util.*
+import vn.periscope.share.statics.ProductType
+import kotlin.streams.toList
 
 data class Product(
     val id: Long,
     val taxonomy: ProductTaxonomy,
     val type: ProductType,
     val name: String,
-    val brandId: Long? = 0,
-    val industryId: Long? = 0,
-    val categoryIds: Set<Long>? = setOf(),
-    val galleries: List<Gallery>? = listOf(),
-    val attributes: List<Attribute>? = listOf(),
+    val brandId: Long,
+    val industryId: Long,
+    val categoryIds: Set<Long>,
+    val galleries: List<Gallery>,
+    val attributes: List<Attribute>,
     val createdAt: Instant,
     var updatedAt: Instant,
 ) {
-    val removeGalleries: List<Gallery> = listOf()
-    val removeAttributes: List<Attribute> = listOf()
+    companion object
+}
 
+val Product.removeGalleries: List<Gallery>
+    get() = listOf()
 
-    fun addGallery(gallery: Gallery) {
+val Product.removeAttributes: List<Attribute>
+    get() = listOf()
 
-    }
+fun Product.addGallery(gallery: Gallery) {
 
-    fun addAllGallery(galleries: List<Gallery>) {
+}
 
-    }
+fun Product.addAllGallery(galleries: List<Gallery>) {
 
-    fun removeAll() {
+}
 
-    }
+fun Product.removeAll() {
 
-    fun removeGallery(galleryId: Long) {
+}
 
-    }
+fun Product.removeGallery(galleryId: Long) {
 
-    fun modify() {
-        this.updatedAt = Clock.System.now()
-    }
+}
+
+fun Product.modify() {
+    this.updatedAt = Clock.System.now()
+}
+
+fun Product.toEntry(): ProductEntry {
+    val galleries = galleries.stream().map {
+        GalleryEntry(
+            id = it.id,
+            storeId = it.storeId,
+            position = it.position
+        )
+    }.toList()
+
+    val attributes = attributes.stream().map {
+        AttributeEntry(
+            id = it.id,
+            name = it.name,
+            values = it.values,
+        )
+    }.toList()
+
+    return ProductEntry(
+        id = id,
+        taxonomy = taxonomy,
+        type = type,
+        name = name,
+        brandId = brandId,
+        industryId = industryId,
+        categoryIds = categoryIds,
+        galleries = galleries,
+        attributes = attributes
+    )
 }
 

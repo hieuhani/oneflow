@@ -4,13 +4,14 @@ import vn.periscope.share.statics.ProductType
 import vn.periscope.share.statics.ProductTaxonomy
 
 data class ProductEntry(
-    val taxonomy: ProductTaxonomy,
-    val type: ProductType,
-    val name: String,
-    val brandId: Long?,
-    val industryId: Long?,
-    val categoryIds: Set<Long>?,
-    val galleries: List<GalleryEntry>?,
-    val attributes: List<ProductAttributeEntry>?,
+    var id:Long? = 0,
+    var taxonomy: ProductTaxonomy,
+    var type: ProductType,
+    var name: String,
+    var brandId: Long = 0,
+    var industryId: Long = 0,
+    var categoryIds: Set<Long> = setOf(),
+    var galleries: List<GalleryEntry> = listOf(),
+    var attributes: List<AttributeEntry> = listOf(),
 )
 

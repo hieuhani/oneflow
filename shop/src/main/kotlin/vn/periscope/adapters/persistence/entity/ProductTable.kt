@@ -6,7 +6,7 @@ import vn.periscope.share.statics.ProductType
 import vn.periscope.share.statics.ProductTaxonomy
 
 object ProductTable : Table(name = "product") {
-    val id = long("id").uniqueIndex().entityId()
+    val id = long("id").uniqueIndex()
     val nid = uuid("nid").uniqueIndex()
     val businessId = long("business_id").index()
     val taxonomy = enumerationByName("taxonomy", 32, ProductTaxonomy::class).index()

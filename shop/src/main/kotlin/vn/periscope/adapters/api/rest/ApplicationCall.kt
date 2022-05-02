@@ -1,6 +1,11 @@
 package vn.periscope.adapters.api.rest
 
+import io.ktor.http.content.*
 import io.ktor.server.application.*
+import io.ktor.server.response.*
+import io.ktor.util.pipeline.*
+import io.ktor.utils.io.*
+import kotlinx.coroutines.GlobalScope
 
 
 const val BUSINESS_ID_HEADER = "Psc-Business-Id"
@@ -36,5 +41,23 @@ internal fun ApplicationCall.longHeader(name: String):Long{
         getHeader(name).toLong()
     } catch (e: NumberFormatException) {
         throw RuntimeException("BusinessID not found")
+    }
+}
+
+internal fun ApplicationCall.abc(){
+    val phase = PipelinePhase("phase")
+    this.request.pipeline.insertPhaseBefore(ApplicationSendPipeline.Engine, phase)
+    this.request.pipeline.intercept(phase) { request ->
+        val content: ByteReadChannel = when (request) {
+            is OutgoingContent.ByteArrayContent -> ByteReadChannel(request.bytes())
+            is OutgoingContent.NoContent -> ByteReadChannel.Empty
+            is OutgoingContent.ReadChannelContent -> request.readFrom()
+            is OutgoingContent.WriteChannelContent -> GlobalScope.writer(coroutineContext, autoFlush = true) {
+                request.writeTo(channel)
+            }.channel
+            else -> error("")
+        }
+
+       content.readUTF8Line()
     }
 }

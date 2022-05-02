@@ -4,18 +4,18 @@ import org.jetbrains.exposed.sql.*
 import vn.periscope.adapters.persistence.entity.GalleryEntity
 import vn.periscope.adapters.persistence.entity.GalleryTable
 import vn.periscope.core.domain.Gallery
-import vn.periscope.share.statics.ObjectReferenceType
+import vn.periscope.share.statics.GalleryReferType
 import java.time.Instant
 
-object GalleryRepository {
-    private val table = GalleryTable
-
+class GalleryRepository(
+    private val table: GalleryTable
+) {
     fun fromSqlResultRow(resultRow: ResultRow) = GalleryEntity(
-        id = resultRow[GalleryTable.id].value,
+        id = resultRow[GalleryTable.id],
         nid = resultRow[GalleryTable.nid],
         businessId = resultRow[GalleryTable.businessId],
-        referenceType = resultRow[GalleryTable.referenceType],
-        referenceId = resultRow[GalleryTable.referenceId],
+        referType = resultRow[GalleryTable.referType],
+        referId = resultRow[GalleryTable.referId],
         storeId = resultRow[GalleryTable.storeId],
         position = resultRow[GalleryTable.position],
         createdAt = kotlinx.datetime.Instant.fromEpochMilliseconds(resultRow[GalleryTable.createdAt].toEpochMilli()),
@@ -27,8 +27,8 @@ object GalleryRepository {
             it[id] = entity.id
             it[nid] = entity.nid
             it[businessId] = entity.businessId
-            it[referenceType] = entity.referenceType
-            it[referenceId] = entity.referenceId
+            it[referType] = entity.referType
+            it[referId] = entity.referId
             it[storeId] = entity.storeId
             it[position] = entity.position
             it[createdAt] = Instant.ofEpochMilli(entity.createdAt.toEpochMilliseconds())
@@ -41,8 +41,8 @@ object GalleryRepository {
             this[GalleryTable.id] = entity.id
             this[GalleryTable.nid] = entity.nid
             this[GalleryTable.businessId] = entity.businessId
-            this[GalleryTable.referenceType] = entity.referenceType
-            this[GalleryTable.referenceId] = entity.referenceId
+            this[GalleryTable.referType] = entity.referType
+            this[GalleryTable.referId] = entity.referId
             this[GalleryTable.storeId] = entity.storeId
             this[GalleryTable.position] = entity.position
             this[GalleryTable.createdAt] = Instant.ofEpochMilli(entity.createdAt.toEpochMilliseconds())
@@ -57,15 +57,13 @@ object GalleryRepository {
         })
     }
 
-    fun findByReferences(referenceType: ObjectReferenceType, referenceIds: List<Long>): List<GalleryEntity> {
-        return table.select { table.referenceType eq referenceType and (table.referenceId inList referenceIds) }
+    fun findByReferIn(referType: GalleryReferType, referIds: List<Long>): List<GalleryEntity> {
+        return table.select { table.referType eq referType and (table.referId inList referIds) }
             .map { fromSqlResultRow(it) }
     }
 
-    fun findByReference(referenceType: ObjectReferenceType, referenceId: Long): List<GalleryEntity> {
-        return table.select { table.referenceType eq referenceType and (table.referenceId eq referenceId) }
+    fun findByRefer(referType: GalleryReferType, referId: Long): List<GalleryEntity> {
+        return table.select { table.referType eq referType and (table.referId eq referId) }
             .map { fromSqlResultRow(it) }
     }
-
-
 }

@@ -5,11 +5,11 @@ import vn.periscope.core.domain.Attribute
 import vn.periscope.core.domain.Gallery
 import vn.periscope.core.domain.Product
 import vn.periscope.ports.CreateProductUseCase
+import vn.periscope.ports.GetAttributeUseCase
 import vn.periscope.ports.GetGalleryUseCase
-import vn.periscope.ports.GetProductAttributeUseCase
 import vn.periscope.ports.TransactionService
+import vn.periscope.ports.models.AttributeEntry
 import vn.periscope.ports.models.GalleryEntry
-import vn.periscope.ports.models.ProductAttributeEntry
 import vn.periscope.ports.models.ProductEntry
 import vn.periscope.ports.out.CreateProductEntryPort
 import vn.periscope.ports.out.GetProductEntryPort
@@ -19,13 +19,13 @@ class CreateProductService(
     private val createProductEntryPort: CreateProductEntryPort,
     private val getProductEntryPort: GetProductEntryPort,
     private val getGalleryUseCase: GetGalleryUseCase,
-    private val getProductAttributeUseCase: GetProductAttributeUseCase
+    private val getAttributeUseCase: GetAttributeUseCase
 ) : CreateProductUseCase {
 
-    override suspend fun create(businessId: Long, entry: ProductEntry): Product {
+    override suspend fun create(businessId: Long, entry: ProductEntry): Product = transactionService.transaction {
         val product = initProduct(entry)
         save(businessId, product)
-        return product
+        return@transaction product
     }
 
     private fun initProduct(entry: ProductEntry): Product {
@@ -37,8 +37,8 @@ class CreateProductService(
             taxonomy = entry.taxonomy,
             type = entry.type,
             name = entry.name,
-            brandId = entry.brandId ?: 0,
-            industryId = entry.industryId ?: 0,
+            brandId = entry.brandId,
+            industryId = entry.industryId,
             categoryIds = setOf(),
             galleries = galleries,
             attributes = attributes,
@@ -50,9 +50,9 @@ class CreateProductService(
     private fun initGalleries(entries: List<GalleryEntry>?): List<Gallery> {
         if (entries.isNullOrEmpty()) return listOf()
         val ids = getGalleryUseCase.getNextSeriesIds(entries.size)
-        val galleries = listOf<Gallery>()
+        val galleries = mutableListOf<Gallery>()
         entries.forEachIndexed { index, galleryEntry ->
-            galleries.toMutableList().add(
+            galleries.add(
                 Gallery(
                     id = ids.toMutableList()[index],
                     storeId = galleryEntry.storeId,
@@ -65,12 +65,12 @@ class CreateProductService(
         return galleries
     }
 
-    private fun initAttribute(entries: List<ProductAttributeEntry>?): List<Attribute> {
+    private fun initAttribute(entries: List<AttributeEntry>?): List<Attribute> {
         if (entries.isNullOrEmpty()) return listOf()
-        val ids = getProductAttributeUseCase.getNextSeriesIds(entries.size)
-        val galleries = listOf<Attribute>()
+        val ids = getAttributeUseCase.getNextSeriesIds(entries.size)
+        val galleries = mutableListOf<Attribute>()
         entries.forEachIndexed { index, attributeEntry ->
-            galleries.toMutableList().add(
+            galleries.add(
                 Attribute(
                     id = ids.toMutableList()[index],
                     name = attributeEntry.name,
@@ -83,7 +83,7 @@ class CreateProductService(
         return galleries
     }
 
-    private suspend fun save(businessId: Long, product: Product) = transactionService.transaction {
-        return@transaction createProductEntryPort.insert(businessId, product)
+    private fun save(businessId: Long, product: Product) {
+        return createProductEntryPort.insert(businessId, product)
     }
 }

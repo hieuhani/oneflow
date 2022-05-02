@@ -7,7 +7,7 @@ import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 
-object KoinPlugin : ApplicationPlugin<Application, KoinApplication, Unit> {
+object KoinPlugin : Plugin<Application, KoinApplication, Unit> {
     override val key: AttributeKey<Unit>
         get() = AttributeKey("Koin")
 

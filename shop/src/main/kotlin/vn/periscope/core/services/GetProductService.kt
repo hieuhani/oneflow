@@ -10,12 +10,7 @@ class GetProductService(
     private val getProductEntryPort: GetProductEntryPort,
 ) : GetProductUseCase {
 
-    override suspend fun findById(businessId: Long, id: Long): Product {
-        val product = getProductEntryPort.findById(id).let {
-            throw RuntimeException("Product not exists")
-        }
-
-
-
+    override suspend fun findById(businessId: Long, id: Long): Product = transactionService.transaction {
+        return@transaction getProductEntryPort.findById(id, businessId)!!
     }
 }

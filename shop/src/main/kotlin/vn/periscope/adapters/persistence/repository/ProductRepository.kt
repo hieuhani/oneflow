@@ -5,15 +5,16 @@ import vn.periscope.adapters.persistence.entity.ProductEntity
 import vn.periscope.adapters.persistence.entity.ProductTable
 import java.time.Instant
 
-object ProductRepository {
+class ProductRepository(
+    private val table: ProductTable
+) {
 
-    private val table = ProductTable
     fun findById(id: Long): ProductEntity {
-        return table.select { table.id eq id }.first().let { fromSqlResultRow(it) }
+        return table.select { table.id eq id and (table.deleted eq false) }.first().let { fromSqlResultRow(it) }
     }
 
     private fun fromSqlResultRow(resultRow: ResultRow) = ProductEntity(
-        id = resultRow[ProductTable.id].value,
+        id = resultRow[ProductTable.id],
         nid = resultRow[ProductTable.nid],
         businessId = resultRow[ProductTable.businessId],
         taxonomy = resultRow[ProductTable.taxonomy],
@@ -50,24 +51,18 @@ object ProductRepository {
         })
     }
 
-    fun filter(
-
-    ): List<ProductEntity> {
-        return table.selectAll().map { fromSqlResultRow(it) }
+    fun filter(businessId: Long): List<ProductEntity> {
+        return table.select { table.businessId eq businessId and (table.deleted eq false) }.map { fromSqlResultRow(it) }
     }
 
-    fun search(): List<ProductEntity> {
-        return table.selectAll().map { fromSqlResultRow(it) }
-    }
-
-    fun delete(id: Long, businessId: Long): Boolean {
-        val affectedRows = table.update({ table.id eq id and (table.businessId eq businessId) }, null, {
+    fun delete(id: Long, businessId: Long) {
+        table.update({ table.id eq id and (table.businessId eq businessId) }, null, {
             it[deleted] = true
         })
-        return affectedRows > 0
     }
 
     fun findById(id: Long, businessId: Long): ProductEntity {
-        return table.select { table.id eq id and (table.businessId eq businessId) }.first().let { fromSqlResultRow(it) }
+        return table.select { table.id eq id and (table.businessId eq businessId) and (table.deleted eq false) }.first()
+            .let { fromSqlResultRow(it) }
     }
 }
