@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 import vn.periscope.cms.ports.taxonomyterm.models.TaxonomyTermEntry
 
 @Serializable
-data class TaxonomyTermRequestDto(
+data class TaxonomyTermRequest(
     val name: String,
     val machineName: String,
     val description: String,

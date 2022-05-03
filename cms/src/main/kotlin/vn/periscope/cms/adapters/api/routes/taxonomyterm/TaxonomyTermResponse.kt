@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 import vn.periscope.cms.ports.taxonomyterm.models.TaxonomyTermEntry
 
 @Serializable
-data class TaxonomyTermResponseDto(
+data class TaxonomyTermResponse(
     val id: Long,
     val name: String,
     val machineName: String,
@@ -14,7 +14,7 @@ data class TaxonomyTermResponseDto(
 ) {
     companion object {
         fun fromDomainModel(model: TaxonomyTermEntry) = with(model) {
-            TaxonomyTermResponseDto(
+            TaxonomyTermResponse(
                 id = id!!,
                 name,
                 machineName,

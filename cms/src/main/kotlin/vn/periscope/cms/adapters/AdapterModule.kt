@@ -48,22 +48,6 @@ import javax.sql.DataSource
 
 val adapterModule = module(createdAtStart = true) {
     single {
-        ContentRoute(application = get())
-    }
-
-    single {
-        TaxonomyRoute(application = get())
-    }
-
-    single {
-        ContentTypeRoute(application = get())
-    }
-
-    single {
-        TaxonomyTermRoute(application = get())
-    }
-
-    single {
         AppBootstrap(application = get())
     }
 
@@ -169,10 +153,26 @@ val adapterModule = module(createdAtStart = true) {
     )
 
     single {
+        ContentRoute(application = get())
+    }
+
+    single {
         ContentFieldValueRoute(application = get())
     }
 
     single {
         ContentTypeFieldRoute(application = get())
+    }
+
+    single {
+        TaxonomyRoute(application = get())
+    }
+
+    single {
+        ContentTypeRoute(application = get())
+    }
+
+    single {
+        TaxonomyTermRoute(application = get())
     }
 }
