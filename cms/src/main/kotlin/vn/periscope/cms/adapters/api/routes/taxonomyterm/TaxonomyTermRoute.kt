@@ -6,6 +6,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.core.qualifier.named
+import vn.periscope.cms.adapters.api.routes.dto.PagingResponse
 import vn.periscope.cms.extensions.inject
 import vn.periscope.cms.extensions.longParameter
 import vn.periscope.cms.ports.resource.CrudResourceUseCase
@@ -21,22 +22,24 @@ class TaxonomyTermRoute(application: Application) {
     init {
         application.routing {
             get("/$RESOURCE") {
-                val resources = crudResourceUseCase.getAllResources()
-                call.respond(resources.map { TaxonomyTermResponseDto.fromDomainModel(it) })
+                val request = TaxonomyTermFilterRequest.fromParameters(call.request.queryParameters)
+
+                val pagedResource = crudResourceUseCase.filter(request.toDomainModel())
+                call.respond(TaxonomyTermResponse.fromPagingDomainModel(pagedResource))
             }
 
             authenticate {
                 post("/$RESOURCE") {
-                    val request: TaxonomyTermRequestDto = call.receive()
+                    val request: TaxonomyTermRequest = call.receive()
                     val resource = crudResourceUseCase.create(request.toDomainModel())
-                    call.respond(TaxonomyTermResponseDto.fromDomainModel(resource))
+                    call.respond(TaxonomyTermResponse.fromDomainModel(resource))
                 }
 
                 put("/$RESOURCE/{id}") {
                     val id = call.longParameter("id")
-                    val request: TaxonomyTermRequestDto = call.receive()
+                    val request: TaxonomyTermRequest = call.receive()
                     val resource = crudResourceUseCase.update(id, request.toDomainModel())
-                    call.respond(TaxonomyTermResponseDto.fromDomainModel(resource))
+                    call.respond(TaxonomyTermResponse.fromDomainModel(resource))
                 }
 
                 delete("/$RESOURCE/id") {

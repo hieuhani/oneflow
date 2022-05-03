@@ -2,12 +2,14 @@ package vn.periscope.cms.core.resource
 
 import vn.periscope.cms.ports.TransactionService
 import vn.periscope.cms.ports.resource.CrudResourceUseCase
+import vn.periscope.cms.ports.resource.models.FilterEntry
+import vn.periscope.cms.ports.resource.models.Paging
 import vn.periscope.cms.ports.resource.output.CrudResourceEntryPort
 
 class CrudResourceService<R, ID>(
     private val transactionService: TransactionService,
     private val crudResourceEntryPort: CrudResourceEntryPort<R, ID>,
-): CrudResourceUseCase<R, ID> {
+) : CrudResourceUseCase<R, ID> {
     override suspend fun create(resource: R) = transactionService.transaction {
         crudResourceEntryPort.create(resource)
     }
@@ -28,4 +30,7 @@ class CrudResourceService<R, ID>(
         crudResourceEntryPort.getAllResources()
     }
 
+    override suspend fun filter(filter: FilterEntry?): Paging<R> = transactionService.transaction {
+        crudResourceEntryPort.filter(filter ?: FilterEntry.DefaultFilterEntry)
+    }
 }

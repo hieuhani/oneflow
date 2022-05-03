@@ -1,10 +1,12 @@
 package vn.periscope.cms.adapters.persistence.content
 
+import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.statements.UpdateStatement
 import vn.periscope.cms.adapters.persistence.resource.ResourceRepository
 import vn.periscope.cms.ports.content.models.ContentEntry
+import vn.periscope.cms.ports.resource.models.FilterEntry
 
 object ContentRepository : ResourceRepository<ContentEntry, ContentEntity, Long, ContentTable>() {
     override val table = ContentTable
@@ -16,6 +18,10 @@ object ContentRepository : ResourceRepository<ContentEntry, ContentEntity, Long,
         userId = resultRow[ContentTable.userId],
         contentTypeId = resultRow[ContentTable.contentTypeId],
     )
+
+    override fun toFilterCondition(filter: FilterEntry): Op<Boolean> {
+        TODO("Not yet implemented")
+    }
 
     override fun toInsertStatement(entry: ContentEntry): ContentTable.(InsertStatement<Number>) -> Unit = {
         it[title] = entry.title

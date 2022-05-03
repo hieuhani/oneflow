@@ -1,11 +1,13 @@
 package vn.periscope.cms.adapters.persistence.contenttypefield
 
+import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.statements.UpdateStatement
 import vn.periscope.cms.adapters.persistence.contenttype.ContentTypeTable
 import vn.periscope.cms.adapters.persistence.resource.ResourceRepository
 import vn.periscope.cms.ports.contenttypefield.models.ContentTypeFieldEntry
+import vn.periscope.cms.ports.resource.models.FilterEntry
 
 object ContentTypeFieldRepository : ResourceRepository<ContentTypeFieldEntry, ContentTypeFieldEntity, Long, ContentTypeFieldTable>() {
     override val table = ContentTypeFieldTable
@@ -37,4 +39,8 @@ object ContentTypeFieldRepository : ResourceRepository<ContentTypeFieldEntry, Co
         type = resultRow[ContentTypeFieldTable.type],
         contentTypeId = resultRow[ContentTypeFieldTable.contentTypeId],
     )
+
+    override fun toFilterCondition(filter: FilterEntry): Op<Boolean> {
+        TODO("Not yet implemented")
+    }
 }

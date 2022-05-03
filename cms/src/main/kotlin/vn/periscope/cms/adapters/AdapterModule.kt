@@ -6,8 +6,8 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.binds
 import org.koin.dsl.module
 import vn.periscope.cms.adapters.api.routes.ContentRoute
-import vn.periscope.cms.adapters.api.routes.ContentTypeRoute
-import vn.periscope.cms.adapters.api.routes.TaxonomyRoute
+import vn.periscope.cms.adapters.api.routes.contenttype.ContentTypeRoute
+import vn.periscope.cms.adapters.api.routes.taxonomy.TaxonomyRoute
 import vn.periscope.cms.adapters.api.routes.contentfieldvalue.ContentFieldValueRoute
 import vn.periscope.cms.adapters.api.routes.contenttypefield.ContentTypeFieldRoute
 import vn.periscope.cms.adapters.api.routes.taxonomyterm.TaxonomyTermRoute
@@ -47,22 +47,6 @@ import vn.periscope.id.ports.auth.JWTService
 import javax.sql.DataSource
 
 val adapterModule = module(createdAtStart = true) {
-    single {
-        ContentRoute(application = get())
-    }
-
-    single {
-        TaxonomyRoute(application = get())
-    }
-
-    single {
-        ContentTypeRoute(application = get())
-    }
-
-    single {
-        TaxonomyTermRoute(application = get())
-    }
-
     single {
         AppBootstrap(application = get())
     }
@@ -169,10 +153,26 @@ val adapterModule = module(createdAtStart = true) {
     )
 
     single {
+        ContentRoute(application = get())
+    }
+
+    single {
         ContentFieldValueRoute(application = get())
     }
 
     single {
         ContentTypeFieldRoute(application = get())
+    }
+
+    single {
+        TaxonomyRoute(application = get())
+    }
+
+    single {
+        ContentTypeRoute(application = get())
+    }
+
+    single {
+        TaxonomyTermRoute(application = get())
     }
 }
