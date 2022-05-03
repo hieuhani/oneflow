@@ -9,8 +9,8 @@ data class TaxonomyTermFilterRequest(
     val taxonomyId: Long?,
     val parentId: Long?,
     val machineName: String?,
-    val limit: Int = 80,
-    val offset: Int = 0,
+    val limit: Int?,
+    val offset: Int?,
 ) {
     companion object {
         fun fromParameters(parameters: Parameters): TaxonomyTermFilterRequest {
@@ -18,6 +18,8 @@ data class TaxonomyTermFilterRequest(
                 taxonomyId = parameters["taxonomyId"]?.toLongOrNull(),
                 parentId = parameters["parentId"]?.toLongOrNull(),
                 machineName = parameters["machineName"],
+                limit = parameters["limit"]?.toIntOrNull(),
+                offset = parameters["offset"]?.toIntOrNull(),
             )
         }
     }
@@ -25,7 +27,7 @@ data class TaxonomyTermFilterRequest(
         taxonomyId,
         parentId,
         machineName,
-        limit,
-        offset,
+        limit = limit ?: 80,
+        offset = offset ?: 0,
     )
 }

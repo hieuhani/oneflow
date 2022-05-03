@@ -24,15 +24,8 @@ class TaxonomyTermRoute(application: Application) {
             get("/$RESOURCE") {
                 val request = TaxonomyTermFilterRequest.fromParameters(call.request.queryParameters)
 
-                val pagedResources = crudResourceUseCase.filter(request.toDomainModel())
-                call.respond(
-                    PagingResponse(
-                        records = pagedResources.records.map {
-                            TaxonomyTermResponse.fromDomainModel(
-                                it
-                            )
-                        }),
-                )
+                val pagedResource = crudResourceUseCase.filter(request.toDomainModel())
+                call.respond(TaxonomyTermResponse.fromPagingDomainModel(pagedResource))
             }
 
             authenticate {

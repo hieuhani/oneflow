@@ -31,6 +31,6 @@ object TaxonomyRepository : ResourceRepository<TaxonomyEntry, TaxonomyEntity, Lo
     )
 
     override fun toFilterCondition(filter: FilterEntry): Op<Boolean> {
-        TODO("Not yet implemented")
+        return Op.TRUE
     }
 }

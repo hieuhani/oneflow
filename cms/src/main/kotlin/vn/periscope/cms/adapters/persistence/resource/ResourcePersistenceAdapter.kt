@@ -30,6 +30,11 @@ internal class ResourcePersistenceAdapter<Entry, Entity : ResourceEntity<Entry>,
 
     override suspend fun filter(filter: FilterEntry): Paging<Entry> {
         val entityRecordSet = resourceRepository.filter(filter)
-        return Paging(records = entityRecordSet.records.map { it.toEntry() })
+        return Paging(
+            records = entityRecordSet.records.map { it.toEntry() },
+            limit = filter.limit,
+            offset = filter.offset,
+            totalRecords = entityRecordSet.totalRecords,
+        )
     }
 }

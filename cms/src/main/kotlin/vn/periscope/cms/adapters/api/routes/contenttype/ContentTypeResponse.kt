@@ -1,32 +1,28 @@
-package vn.periscope.cms.adapters.api.routes.taxonomyterm
+package vn.periscope.cms.adapters.api.routes.contenttype
 
 import kotlinx.serialization.Serializable
 import vn.periscope.cms.adapters.api.routes.dto.PagingResponse
+import vn.periscope.cms.ports.contenttype.models.ContentTypeEntry
 import vn.periscope.cms.ports.resource.models.Paging
-import vn.periscope.cms.ports.taxonomyterm.models.TaxonomyTermEntry
 
 @Serializable
-data class TaxonomyTermResponse(
+data class ContentTypeResponse(
     val id: Long,
     val name: String,
     val machineName: String,
     val description: String,
-    val taxonomyId: Long,
-    val parentId: Long? = null,
 ) {
     companion object {
-        fun fromDomainModel(model: TaxonomyTermEntry) = with(model) {
-            TaxonomyTermResponse(
+        fun fromDomainModel(model: ContentTypeEntry) = with(model) {
+            ContentTypeResponse(
                 id = id!!,
                 name,
                 machineName,
                 description,
-                taxonomyId,
-                parentId
             )
         }
 
-        fun fromPagingDomainModel(pagedResource: Paging<TaxonomyTermEntry>) = with(pagedResource) {
+        fun fromPagingDomainModel(pagedResource: Paging<ContentTypeEntry>) = with(pagedResource) {
             PagingResponse(
                 records = records.map { fromDomainModel(it) },
                 limit,

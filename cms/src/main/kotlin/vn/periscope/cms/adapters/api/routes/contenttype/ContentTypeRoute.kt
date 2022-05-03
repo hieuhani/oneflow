@@ -1,4 +1,4 @@
-package vn.periscope.cms.adapters.api.routes
+package vn.periscope.cms.adapters.api.routes.contenttype
 
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -6,8 +6,6 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.core.qualifier.named
-import vn.periscope.cms.adapters.api.routes.dto.ContentTypeRequestDto
-import vn.periscope.cms.adapters.api.routes.dto.ContentTypeResponseDto
 import vn.periscope.cms.extensions.inject
 import vn.periscope.cms.extensions.longParameter
 import vn.periscope.cms.ports.contenttype.models.ContentTypeEntry
@@ -22,26 +20,27 @@ class ContentTypeRoute(application: Application) {
 
     init {
         application.routing {
-            get("/${RESOURCE}") {
-                val resources = crudResourceUseCase.getAllResources()
-                call.respond(resources.map { ContentTypeResponseDto.fromDomainModel(it) })
+            get("/$RESOURCE") {
+                val request = ContentTypeFilterRequest.fromParameters(call.request.queryParameters)
+                val pagedResource = crudResourceUseCase.filter(request.toDomainModel())
+                call.respond(ContentTypeResponse.fromPagingDomainModel(pagedResource))
             }
 
             authenticate {
-                post("/${RESOURCE}") {
-                    val request: ContentTypeRequestDto = call.receive()
+                post("/$RESOURCE") {
+                    val request: ContentTypeRequest = call.receive()
                     val contentType = crudResourceUseCase.create(request.toDomainModel())
-                    call.respond(ContentTypeResponseDto.fromDomainModel(contentType))
+                    call.respond(ContentTypeResponse.fromDomainModel(contentType))
                 }
 
-                put("/${RESOURCE}/{id}") {
+                put("/$RESOURCE/{id}") {
                     val id = call.longParameter("id")
-                    val request: ContentTypeRequestDto = call.receive()
+                    val request: ContentTypeRequest = call.receive()
                     val contentType = crudResourceUseCase.update(id, request.toDomainModel())
-                    call.respond(ContentTypeResponseDto.fromDomainModel(contentType))
+                    call.respond(ContentTypeResponse.fromDomainModel(contentType))
                 }
 
-                delete("/${RESOURCE}/id") {
+                delete("/$RESOURCE/id") {
                     val id = call.longParameter("id")
                     val status = crudResourceUseCase.delete(id)
                     call.respond(status)

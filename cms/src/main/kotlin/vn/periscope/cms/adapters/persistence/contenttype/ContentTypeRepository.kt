@@ -31,6 +31,6 @@ object ContentTypeRepository : ResourceRepository<ContentTypeEntry, ContentTypeE
     )
 
     override fun toFilterCondition(filter: FilterEntry): Op<Boolean> {
-        TODO("Not yet implemented")
+        return Op.TRUE
     }
 }

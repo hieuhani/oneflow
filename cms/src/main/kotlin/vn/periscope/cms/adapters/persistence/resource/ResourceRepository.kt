@@ -23,11 +23,17 @@ abstract class ResourceRepository<Entry, Entity, ID : Comparable<ID>, Table : Id
     }
 
     fun filter(filter: FilterEntry): Paging<Entity> {
+        val count = table.select(toFilterCondition(filter)).count()
         val records = table
             .select(toFilterCondition(filter))
             .limit(filter.limit, offset = filter.offset.toLong())
             .map { fromSqlResultRow(it) }
-        return Paging(records)
+        return Paging(
+            records = records,
+            limit = filter.limit,
+            offset = filter.offset,
+            totalRecords = count,
+        )
     }
 
     fun create(entry: Entry): Entity {
