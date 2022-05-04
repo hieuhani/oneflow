@@ -2,12 +2,11 @@ package vn.periscope.ports.models
 
 import kotlinx.datetime.Instant
 import vn.periscope.share.statics.ProductType
-import vn.periscope.share.statics.ProductTaxonomy
 
 data class ProductFilterAndSearchEntry(
     val ids: Set<Long>?,
     val categoryIds: Set<Long>?,
-    val taxonomy: ProductTaxonomy?,
+    val taxonomy: ProductType?,
     val managementMethodology: ProductType?,
     val brandIds: Set<Long>,
     val industryIds: Set<Long>,

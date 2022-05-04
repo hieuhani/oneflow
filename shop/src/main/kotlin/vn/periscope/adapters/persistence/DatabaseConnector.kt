@@ -17,7 +17,7 @@ class DatabaseConnector(
     private val db: Database = Database.connect(datasource = dataSource)
     private val tables = arrayOf(
         ProductTable ,
-        GalleryTable,
+        PhotoTable,
         AttributeTable,
         ProductCategoryTable,
         AttributeValueTable
@@ -25,7 +25,7 @@ class DatabaseConnector(
 
     private val sequences = arrayOf(
         ProductIdSequence.sequence,
-        GalleryIdSequence.sequence,
+        PhotoIdSequence.sequence,
         AttributeIdSequence.sequence,
         VariantIdSequence.sequence
     )

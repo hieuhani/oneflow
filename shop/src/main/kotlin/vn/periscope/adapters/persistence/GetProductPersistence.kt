@@ -4,7 +4,6 @@ import vn.periscope.adapters.persistence.entity.ProductEntity
 import vn.periscope.adapters.persistence.entity.ProductIdSequence
 import vn.periscope.adapters.persistence.repository.*
 import vn.periscope.core.domain.Attribute
-import vn.periscope.core.domain.Gallery
 import vn.periscope.core.domain.Product
 import vn.periscope.ports.out.GetProductEntryPort
 import vn.periscope.share.statics.AttributeReferType

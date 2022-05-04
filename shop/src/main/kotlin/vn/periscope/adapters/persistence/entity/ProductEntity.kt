@@ -2,15 +2,14 @@ package vn.periscope.adapters.persistence.entity
 
 import kotlinx.datetime.Instant
 import vn.periscope.share.statics.ProductType
-import vn.periscope.share.statics.ProductTaxonomy
 import java.util.*
 
 data class ProductEntity(
     val id: Long,
     val businessId: Long,
-    val taxonomy: ProductTaxonomy,
     val type: ProductType,
     val name: String,
+    val photoId: Long,
     val brandId: Long,
     val industryId: Long,
     val createdAt: Instant,

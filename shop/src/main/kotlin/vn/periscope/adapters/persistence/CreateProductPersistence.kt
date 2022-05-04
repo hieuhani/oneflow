@@ -13,7 +13,6 @@ import kotlin.streams.toList
 
 class CreateProductPersistence(
     private val productRepository: ProductRepository,
-    private val galleryRepository: GalleryRepository,
     private val attributeRepository: AttributeRepository,
     private val productCategoryRepository: ProductCategoryRepository,
     private val attributeValueRepository: AttributeValueRepository,
@@ -24,9 +23,9 @@ class CreateProductPersistence(
             ProductEntity(
                 id = product.id,
                 businessId = businessId,
-                taxonomy = product.taxonomy,
                 type = product.type,
                 name = product.name,
+                photoId = product.photoId,
                 brandId = product.brandId,
                 industryId = product.industryId,
                 createdAt = product.createdAt,
@@ -35,26 +34,7 @@ class CreateProductPersistence(
             )
         )
         insertBatchCategory(businessId, product)
-        insertBatchGallery(businessId, product)
         insertBatchAttribute(businessId, product)
-    }
-
-    private fun insertBatchGallery(businessId: Long, product: Product) {
-        if (product.galleries.isEmpty()) return
-        val entities = product.galleries.stream().map {
-            GalleryEntity(
-                it.id,
-                businessId,
-                GalleryReferType.PRODUCT,
-                product.id,
-                it.storeId,
-                it.position,
-                it.createdAt,
-                it.createdAt,
-                UUID.randomUUID()
-            )
-        }.toList()
-        galleryRepository.batchInsert(entities)
     }
 
     private fun insertBatchAttribute(businessId: Long, product: Product) {

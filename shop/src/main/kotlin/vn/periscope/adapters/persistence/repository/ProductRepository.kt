@@ -17,9 +17,9 @@ class ProductRepository(
         id = resultRow[ProductTable.id],
         nid = resultRow[ProductTable.nid],
         businessId = resultRow[ProductTable.businessId],
-        taxonomy = resultRow[ProductTable.taxonomy],
-        type = resultRow[ProductTable.managementMethodology],
+        type = resultRow[ProductTable.type],
         name = resultRow[ProductTable.name],
+        photoId = resultRow[ProductTable.brandId],
         brandId = resultRow[ProductTable.brandId],
         industryId = resultRow[ProductTable.industryId],
         createdAt = kotlinx.datetime.Instant.fromEpochMilliseconds(resultRow[ProductTable.createdAt].toEpochMilli()),
@@ -31,9 +31,9 @@ class ProductRepository(
             it[id] = entity.id
             it[nid] = entity.nid
             it[businessId] = entity.businessId
-            it[taxonomy] = entity.taxonomy
-            it[managementMethodology] = entity.type
+            it[type] = entity.type
             it[name] = entity.name
+            it[photoId] = entity.photoId
             it[brandId] = entity.brandId
             it[industryId] = entity.industryId
             it[createdAt] = Instant.ofEpochMilli(entity.createdAt.toEpochMilliseconds())

@@ -47,10 +47,6 @@ val adapterModule = module(createdAtStart = true) {
     }
 
     single {
-        GalleryTable
-    }
-
-    single {
         ProductCategoryTable
     }
 
@@ -71,10 +67,6 @@ val adapterModule = module(createdAtStart = true) {
     }
 
     single {
-        GalleryRepository(table = get())
-    }
-
-    single {
         ProductCategoryRepository(table = get())
     }
 
@@ -83,7 +75,6 @@ val adapterModule = module(createdAtStart = true) {
     single {
         CreateProductPersistence(
             productRepository = get(),
-            galleryRepository = get(),
             attributeRepository = get(),
             productCategoryRepository = get(),
             attributeValueRepository = get()
@@ -111,15 +102,6 @@ val adapterModule = module(createdAtStart = true) {
         )
     } bind (
             DeleteProductEntryPort::class
-            )
-
-    single {
-        GetGalleryPersistence(
-            galleryRepository = get(),
-            idProviderRepository = get()
-        )
-    } bind (
-            GetGalleryEntryPort::class
             )
 
     single {

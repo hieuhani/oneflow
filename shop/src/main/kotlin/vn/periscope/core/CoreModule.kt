@@ -17,14 +17,6 @@ val coreModule = module(createdAtStart = true) {
             )
 
     single {
-        GetGalleryService(
-            getGalleryEntryPort = get()
-        )
-    } bind (
-            GetGalleryUseCase::class
-            )
-
-    single {
         GetAttributeService(
             getAttributeEntryPoint = get()
         )
@@ -33,12 +25,19 @@ val coreModule = module(createdAtStart = true) {
             )
 
     single {
+        CreateAttributeService(
+            getAttributeEntryPoint = get()
+        )
+    } bind (
+            CreateAttributeUseCase::class
+            )
+
+    single {
         CreateProductService(
             transactionService = get(),
             createProductEntryPort = get(),
             getProductEntryPort = get(),
-            getGalleryUseCase = get(),
-            getAttributeUseCase = get()
+            createAttributeUseCase = get()
         )
     } binds arrayOf(
         CreateProductUseCase::class,
@@ -48,6 +47,7 @@ val coreModule = module(createdAtStart = true) {
         UpdateProductService(
             transactionService = get(),
             updateProductEntryPort = get(),
+            createAttributeUseCase = get()
         )
     } binds arrayOf(
         UpdateProductUseCase::class,

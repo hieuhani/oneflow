@@ -1,12 +1,11 @@
 package vn.periscope.core.domain
 
 import kotlinx.datetime.Instant
-import java.util.*
 
-data class Gallery(
+data class Industry(
     val id: Long,
-    val storeId: Long,
-    val position: Int,
+    val name: String,
+    val machineName: String,
     val createdAt: Instant,
     val updatedAt: Instant
 )

@@ -9,9 +9,14 @@ import vn.periscope.ports.out.UpdateProductEntryPort
 class UpdateProductService(
     private val transactionService: TransactionService,
     private val updateProductEntryPort: UpdateProductEntryPort,
+    private val createAttributeUseCase: CreateAttributeService
 ) : UpdateProductUseCase {
 
-    override suspend fun update(productEntry: ProductEntry, product: Product) = transactionService.transaction {
-        TODO("Not yet implemented")
+    override suspend fun update(entry: ProductEntry, product: Product) = transactionService.transaction {
+        product.name = entry.name
+        product.brandId = entry.brandId
+        product.industryId = entry.industryId
+        product.categoryIds = entry.categoryIds
+
     }
 }
