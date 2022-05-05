@@ -6,8 +6,9 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.binds
 import org.koin.dsl.module
 import vn.periscope.cms.adapters.api.routes.ContentRoute
-import vn.periscope.cms.adapters.api.routes.ContentTypeRoute
-import vn.periscope.cms.adapters.api.routes.TaxonomyRoute
+import vn.periscope.cms.adapters.api.routes.contenttype.ContentTypeRoute
+import vn.periscope.cms.adapters.api.routes.taxonomy.TaxonomyRoute
+import vn.periscope.cms.adapters.api.routes.contentfieldvalue.ContentFieldValueRoute
 import vn.periscope.cms.adapters.api.routes.contenttypefield.ContentTypeFieldRoute
 import vn.periscope.cms.adapters.api.routes.taxonomyterm.TaxonomyTermRoute
 import vn.periscope.cms.adapters.configs.DatabaseConfig
@@ -15,6 +16,9 @@ import vn.periscope.cms.adapters.persistence.DatabaseConnector
 import vn.periscope.cms.adapters.persistence.ExposedTransactionService
 import vn.periscope.cms.adapters.persistence.content.ContentPersistenceAdapter
 import vn.periscope.cms.adapters.persistence.content.ContentRepository
+import vn.periscope.cms.adapters.persistence.contentfieldvalue.ContentFieldValueEntity
+import vn.periscope.cms.adapters.persistence.contentfieldvalue.ContentFieldValueRepository
+import vn.periscope.cms.adapters.persistence.contentfieldvalue.ContentFieldValueTable
 import vn.periscope.cms.adapters.persistence.contenttype.ContentTypeEntity
 import vn.periscope.cms.adapters.persistence.contenttype.ContentTypeRepository
 import vn.periscope.cms.adapters.persistence.contenttype.ContentTypeTable
@@ -31,6 +35,7 @@ import vn.periscope.cms.adapters.persistence.taxonomyterm.TaxonomyTermRepository
 import vn.periscope.cms.adapters.persistence.taxonomyterm.TaxonomyTermTable
 import vn.periscope.cms.ports.TransactionService
 import vn.periscope.cms.ports.content.output.*
+import vn.periscope.cms.ports.contentfieldvalue.models.ContentFieldValueEntry
 import vn.periscope.cms.ports.contenttype.models.ContentTypeEntry
 import vn.periscope.cms.ports.contenttypefield.models.ContentTypeFieldEntry
 import vn.periscope.cms.ports.resource.output.CrudResourceEntryPort
@@ -42,26 +47,6 @@ import vn.periscope.id.ports.auth.JWTService
 import javax.sql.DataSource
 
 val adapterModule = module(createdAtStart = true) {
-    single {
-        ContentRoute(application = get())
-    }
-
-    single {
-        TaxonomyRoute(application = get())
-    }
-
-    single {
-        ContentTypeRoute(application = get())
-    }
-
-    single {
-        TaxonomyTermRoute(application = get())
-    }
-
-    single {
-        ContentTypeFieldRoute(application = get())
-    }
-
     single {
         AppBootstrap(application = get())
     }
@@ -154,4 +139,40 @@ val adapterModule = module(createdAtStart = true) {
     } binds arrayOf(
         CrudResourceEntryPort::class,
     )
+
+    // ContentFieldValue
+    single<ResourceRepository<ContentFieldValueEntry, ContentFieldValueEntity, Long, ContentFieldValueTable>>(named("ContentFieldValueRepository")) {
+        ContentFieldValueRepository
+    }
+    single(named("ContentFieldValuePersistenceAdapter")) {
+        ResourcePersistenceAdapter<ContentFieldValueEntry, ContentFieldValueEntity, Long>(
+            resourceRepository = get(named("ContentFieldValueRepository")),
+        )
+    } binds arrayOf(
+        CrudResourceEntryPort::class,
+    )
+
+    single {
+        ContentRoute(application = get())
+    }
+
+    single {
+        ContentFieldValueRoute(application = get())
+    }
+
+    single {
+        ContentTypeFieldRoute(application = get())
+    }
+
+    single {
+        TaxonomyRoute(application = get())
+    }
+
+    single {
+        ContentTypeRoute(application = get())
+    }
+
+    single {
+        TaxonomyTermRoute(application = get())
+    }
 }

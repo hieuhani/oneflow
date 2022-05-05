@@ -5,4 +5,5 @@ import kotlinx.datetime.Instant
 data class UserTokenPayload(
     val subject: String,
     val expiresAt: Instant,
+    val sessionId: String,
 )

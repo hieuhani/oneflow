@@ -1,30 +1,29 @@
 package vn.periscope.id.ports.auth
 
-import vn.periscope.id.ports.BaseError
+import vn.periscope.id.ports.DomainError
 
 sealed class AuthError(
     code: Int,
     message: String,
     cause: Throwable? = null,
-) : BaseError(code, message, cause) {
-    companion object {
-        const val EMAIL_IS_ALREADY_REGISTERED = 400_001
-        const val EMAIL_IS_NOT_EXISTS = 400_002
-        const val WRONG_EMAIL_OR_PASSWORD = 400_003
-    }
-
+) : DomainError(code, message, cause) {
     object EmailAlreadyRegistered : AuthError(
-        EMAIL_IS_ALREADY_REGISTERED,
+        400_001,
         "Email is already registered"
     )
 
     object EmailNotExists : AuthError(
-        EMAIL_IS_NOT_EXISTS,
+        400_002,
         "Email is not exists"
     )
 
     object WrongEmailOrPassword : AuthError(
-        WRONG_EMAIL_OR_PASSWORD,
+        400_003,
         "Wrong email or password"
+    )
+
+    object InvalidRefreshToken : AuthError(
+        400_004,
+        "Invalid refresh token"
     )
 }
