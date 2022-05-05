@@ -1,24 +1,19 @@
 package vn.periscope.core.domain
 
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import vn.periscope.ports.models.BrandEntry
-import  kotlinx.datetime.Clock
 import vn.periscope.adapters.persistence.entity.BrandEntity
+import vn.periscope.ports.models.BrandEntry
 
-class Brand(
-    id: Long = 0,
-    private var name: String,
-    private var shortName: String,
-    private var logoId: Long = 0,
-    private var countryId: Long = 0,
-    createdAt: Instant,
-    updatedAt: Instant,
-    state: DomainState = DomainState.NONE,
-) : BaseDomain<Long>(
-    id,
-    state,
-    createdAt,
-    updatedAt
+class Brand private constructor(
+     var id: Long = 0,
+     var name: String,
+     var shortName: String,
+     var logoId: Long = 0,
+     var countryId: Long = 0,
+     var createdAt: Instant,
+     var updatedAt: Instant,
+     var state: DomainState = DomainState.NONE,
 ) {
 
     companion object {
@@ -76,8 +71,5 @@ class Brand(
         this.state = DomainState.UPDATE
     }
 
-    fun getName(): String {
-        return name;
-    }
 
 }
