@@ -2,10 +2,12 @@ package vn.periscope.cms.adapters.persistence.contenttype
 
 import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.statements.UpdateStatement
 import vn.periscope.cms.adapters.persistence.resource.ResourceRepository
 import vn.periscope.cms.ports.contenttype.models.ContentTypeEntry
+import vn.periscope.cms.ports.contenttype.models.ContentTypeFilterEntry
 import vn.periscope.cms.ports.resource.models.FilterEntry
 
 object ContentTypeRepository : ResourceRepository<ContentTypeEntry, ContentTypeEntity, Long, ContentTypeTable>() {
@@ -31,6 +33,14 @@ object ContentTypeRepository : ResourceRepository<ContentTypeEntry, ContentTypeE
     )
 
     override fun toFilterCondition(filter: FilterEntry): Op<Boolean> {
-        return Op.TRUE
+        var op = Op.TRUE as Op<Boolean>
+        if (filter is ContentTypeFilterEntry) {
+            filter.machineName?.let {
+                op = op.and {
+                    table.machineName eq filter.machineName
+                }
+            }
+        }
+        return op
     }
 }
