@@ -11,5 +11,4 @@ data class VariantEntry(
     val status: VariantStatus? = VariantStatus.DELETED,
     val prices: List<VariantPriceEntry>,
     val attribute: List<VariantAttributeEntry>,
-    val galleries: List<GalleryEntry>? = listOf(),
 )

@@ -22,7 +22,7 @@ class ProductResource(application: Application) {
     private val createProductUseCase by inject<CreateProductUseCase>()
     private val updateContentUseCase by inject<UpdateProductUseCase>()
     private val deleteContentUseCase by inject<DeleteProductUseCase>()
-    private val filterAndSearchProductUseCase by inject<FilterAndSearchProductUseCase>()
+    private val findProductUseCase by inject<FindProductUseCase>()
 
     init {
         application.routing {
@@ -62,7 +62,7 @@ class ProductResource(application: Application) {
 
                 get("/products") {
                     val businessId = call.longHeader(BUSINESS_ID_HEADER)
-                    val products = filterAndSearchProductUseCase.filterAndSearch(businessId)
+                    val products = findProductUseCase.filterAndSearch(businessId)
                     call.respond(HttpStatusCode.OK, products.stream().map { toProductResponse(it) }.toList())
                 }
             }

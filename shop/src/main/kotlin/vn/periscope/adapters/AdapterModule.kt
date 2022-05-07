@@ -5,6 +5,8 @@ import io.ktor.server.application.*
 import org.koin.dsl.bind
 import org.koin.dsl.binds
 import org.koin.dsl.module
+import vn.periscope.adapters.api.rest.BrandResource
+import vn.periscope.adapters.api.rest.IndustryResource
 import vn.periscope.adapters.api.rest.ProductResource
 import vn.periscope.adapters.configs.DatabaseConfiguration
 import vn.periscope.adapters.persistence.*
@@ -55,6 +57,10 @@ val adapterModule = module(createdAtStart = true) {
     }
 
     single {
+        BrandTable
+    }
+
+    single {
         ProductRepository(table = get())
     }
 
@@ -73,6 +79,22 @@ val adapterModule = module(createdAtStart = true) {
     single { ProductResource(application = get()) }
 
     single {
+        BrandRepository
+    }
+
+    single {
+        BrandResource(application = get())
+    }
+
+    single {
+        IndustryRepository
+    }
+
+    single {
+        IndustryResource(application = get())
+    }
+
+    single {
         CreateProductPersistence(
             productRepository = get(),
             attributeRepository = get(),
@@ -86,7 +108,6 @@ val adapterModule = module(createdAtStart = true) {
     single {
         GetProductPersistence(
             productRepository = get(),
-            galleryRepository = get(),
             attributeRepository = get(),
             idProviderRepository = get(),
             productCategoryRepository = get(),
@@ -114,15 +135,14 @@ val adapterModule = module(createdAtStart = true) {
             )
 
     single {
-        FilterAndSearchPersistence(
+        FindPersistence(
             productRepository = get(),
-            galleryRepository = get(),
             attributeRepository = get(),
             productCategoryRepository = get(),
             attributeValueRepository = get()
         )
     } bind (
-            FilterAndSearchProductEntryPort::class
+            FindProductEntryPort::class
             )
 
     single {
@@ -130,4 +150,28 @@ val adapterModule = module(createdAtStart = true) {
     } bind (
             UpdateProductEntryPort::class
             )
+
+    single {
+        BrandPersistence(
+            brandRepository = get(),
+        )
+    } binds arrayOf(
+        CreateBrandEntryPort::class,
+        GetBrandEntryPort::class,
+        UpdateBrandEntryPort::class,
+        DeleteBrandEntryPort::class,
+        FindBrandEntryPort::class
+    )
+
+    single {
+        IndustryPersistence(
+            industryRepository = get(),
+        )
+    } binds arrayOf(
+        CreateIndustryEntryPoint::class,
+        GetIndustryEntryPort::class,
+        UpdateIndustryEntryPort::class,
+        DeleteIndustryEntryPort::class,
+        FindIndustryEntryPort::class
+    )
 }

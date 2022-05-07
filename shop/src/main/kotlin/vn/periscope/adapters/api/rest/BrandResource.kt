@@ -6,8 +6,8 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import vn.periscope.adapters.api.rest.vm.request.CreateBrandRequest
-import vn.periscope.adapters.api.rest.vm.request.CreateProductRequest
-import vn.periscope.adapters.api.rest.vm.request.UpdateProductRequest
+import vn.periscope.adapters.api.rest.vm.request.UpdateBrandRequest
+import vn.periscope.adapters.api.rest.vm.response.BrandResponse
 import vn.periscope.extentions.inject
 import vn.periscope.ports.*
 import vn.periscope.ports.models.BrandEntry
@@ -23,49 +23,50 @@ class BrandResource(application: Application) {
     init {
         application.routing {
             route("/api/v1") {
-                get("/products/{id}") {
+                get("/brands/{id}") {
                     val id = call.longParameter("id")
                     val businessId = call.longHeader(BUSINESS_ID_HEADER)
-                    val product = getProductUseCase.findById(businessId, id)
-                    call.respond(HttpStatusCode.OK, toProductResponse(product))
+                    val brand = getBrandUseCase.getById(businessId, id)
+                    call.respond(HttpStatusCode.OK, BrandResponse.fromBrand(brand))
                 }
 
-                post("/products") {
+                post("/brands") {
                     val request: CreateBrandRequest = call.receive()
                     val businessId = call.longHeader(BUSINESS_ID_HEADER)
                     val entry = BrandEntry(
                         name = request.name,
-                        shortName = request.shortName,
                         logoId = request.logoId ?: 0,
                         countryId = request.countryId ?: 0
-
                     )
                     val brand = createBrandUseCase.create(businessId, entry)
-                    call.respond(HttpStatusCode.Created, toProductResponse(product))
+                    call.respond(HttpStatusCode.Created, BrandResponse.fromBrand(brand))
                 }
 
-                put("/products/{id}") {
+                put("/brands/{id}") {
                     val id = call.longParameter("id")
                     val businessId = call.longHeader(BUSINESS_ID_HEADER)
-                    val request: UpdateProductRequest = call.receive()
-                    val product = getProductUseCase.findById(businessId, id)
-                    val productEntry = product.toEntry()
-                    toProductEntryForUpdate(request, productEntry)
-                    updateBrandUseCase.update(productEntry, product)
-                    call.respond(HttpStatusCode.OK, toProductResponse(product))
+                    val request: UpdateBrandRequest = call.receive()
+                    val entry = BrandEntry(
+                        name = request.name,
+                        logoId = request.logoId ?: 0,
+                        countryId = request.countryId ?: 0
+                    )
+                    val brand = updateBrandUseCase.update(businessId, id, entry)
+                    call.respond(HttpStatusCode.OK, BrandResponse.fromBrand(brand))
                 }
 
-                delete("/products/{id}") {
+                delete("/brands/{id}") {
                     val id = call.longParameter("id")
                     val businessId = call.longHeader(BUSINESS_ID_HEADER)
-                    deleteContentUseCase.delete(id, businessId)
+                    deleteBrandUseCase.delete(id, businessId)
                     call.respond(HttpStatusCode.OK)
                 }
 
-                get("/products") {
+                get("/brands") {
                     val businessId = call.longHeader(BUSINESS_ID_HEADER)
-                    val products = filterAndSearchProductUseCase.filterAndSearch(businessId)
-                    call.respond(HttpStatusCode.OK, products.stream().map { toProductResponse(it) }.toList())
+                    val brands = findBrandUseCase.find(businessId)
+                    val brandResponses = brands.stream().map { BrandResponse.fromBrand(it) }.toList()
+                    call.respond(HttpStatusCode.OK, brandResponses)
                 }
             }
         }

@@ -1,17 +1,15 @@
 package vn.periscope.adapters.persistence.entity
 
-import kotlinx.datetime.Instant
-import vn.periscope.core.domain.Industry
+import org.jetbrains.exposed.dao.LongEntity
+import org.jetbrains.exposed.dao.LongEntityClass
+import org.jetbrains.exposed.dao.id.EntityID
 
-data class IndustryEntity(
-    val id: Long = 0,
-    val businessId: Long,
-    val name: String,
-    val machineName: String,
-    val createdAt: Instant,
-    val updatedAt: Instant,
-) {
-    fun toIndustry() = Industry(
-        id, name, machineName, createdAt, updatedAt
-    )
+class IndustryEntity(id: EntityID<Long>) : LongEntity(id) {
+    companion object : LongEntityClass<IndustryEntity>(IndustryTable)
+
+    var businessId by IndustryTable.businessId
+    var name by IndustryTable.name
+    var machineName by IndustryTable.machineName
+    var createdAt by IndustryTable.createdAt
+    var updatedAt by IndustryTable.updatedAt
 }

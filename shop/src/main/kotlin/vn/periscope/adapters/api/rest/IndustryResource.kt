@@ -8,7 +8,6 @@ import io.ktor.server.routing.*
 import vn.periscope.adapters.api.rest.vm.request.CreateIndustryRequest
 import vn.periscope.adapters.api.rest.vm.request.UpdateIndustryRequest
 import vn.periscope.adapters.api.rest.vm.response.IndustryResponse
-import vn.periscope.core.domain.Industry
 import vn.periscope.extentions.inject
 import vn.periscope.ports.*
 import vn.periscope.ports.models.IndustryEntry
@@ -19,7 +18,7 @@ class IndustryResource(application: Application) {
     private val createIndustryUseCase by inject<CreateIndustryUseCase>()
     private val updateIndustryUseCase by inject<UpdateIndustryUseCase>()
     private val deleteIndustryUseCase by inject<DeleteIndustryUseCase>()
-    private val getAllIndustryUseCase by inject<GetAllIndustryUseCase>()
+    private val findIndustryUseCase by inject<FindIndustryUseCase>()
 
 
     init {
@@ -29,7 +28,7 @@ class IndustryResource(application: Application) {
                     val id = call.longParameter("id")
                     val businessId = call.longHeader(BUSINESS_ID_HEADER)
                     val industry = getIndustryUseCase.findById(businessId, id)
-                    call.respond(HttpStatusCode.OK, toIndustryResponse(industry))
+                    call.respond(HttpStatusCode.OK, IndustryResponse.fromIndustry(industry))
                 }
 
                 post("/industries") {
@@ -40,7 +39,7 @@ class IndustryResource(application: Application) {
                         machineName = request.machineName
                     )
                     val industry = createIndustryUseCase.create(businessId, entry)
-                    call.respond(HttpStatusCode.Created, toIndustryResponse(industry))
+                    call.respond(HttpStatusCode.Created, IndustryResponse.fromIndustry(industry))
                 }
 
                 put("/industries/{id}") {
@@ -52,7 +51,7 @@ class IndustryResource(application: Application) {
                         machineName = request.machineName
                     )
                     val industry = updateIndustryUseCase.update(businessId, id, entry)
-                    call.respond(HttpStatusCode.OK, toIndustryResponse(industry))
+                    call.respond(HttpStatusCode.OK, IndustryResponse.fromIndustry(industry))
                 }
 
                 delete("/industries/{id}") {
@@ -64,18 +63,14 @@ class IndustryResource(application: Application) {
 
                 get("/industries") {
                     val businessId = call.longHeader(BUSINESS_ID_HEADER)
-                    val industries = getAllIndustryUseCase.findAll(businessId)
-                    call.respond(HttpStatusCode.OK, industries.stream().map { toIndustryResponse(it) }.toList())
+                    val industries = findIndustryUseCase.find(businessId)
+                    call.respond(
+                        HttpStatusCode.OK,
+                        industries.stream().map { IndustryResponse.fromIndustry(it) }.toList()
+                    )
                 }
             }
         }
     }
 
-    private fun toIndustryResponse(industry: Industry) = IndustryResponse(
-        id = industry.id,
-        name = industry.name,
-        machineName = industry.machineName,
-        createdAt = industry.createdAt,
-        updateAt = industry.updatedAt
-    )
 }

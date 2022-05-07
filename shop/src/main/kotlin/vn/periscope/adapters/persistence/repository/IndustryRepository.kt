@@ -1,57 +1,42 @@
 package vn.periscope.adapters.persistence.repository
 
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.and
 import vn.periscope.adapters.persistence.entity.IndustryEntity
 import vn.periscope.adapters.persistence.entity.IndustryTable
+import vn.periscope.ports.models.IndustryEntry
 import java.time.Instant
 
-class IndustryRepository(
-    private val table: IndustryTable
-) {
+object IndustryRepository {
 
-    private fun findById(id: Long): IndustryEntity {
-        return table.select { table.id eq id }.first().let { fromSqlResultRow(it) }
+    fun getById(_businessId: Long, _id: Long): IndustryEntity? {
+        return IndustryEntity.find { (IndustryTable.businessId eq _businessId) and (IndustryTable.id eq _id) }
+            .firstOrNull()
     }
 
-    fun findById(businessId: Long, id: Long): IndustryEntity {
-        return table.select { table.id eq id and (table.businessId eq businessId) }.first().let { fromSqlResultRow(it) }
-    }
-
-    private fun fromSqlResultRow(resultRow: ResultRow) = IndustryEntity(
-        id = resultRow[IndustryTable.id].value,
-        businessId = resultRow[IndustryTable.businessId],
-        name = resultRow[IndustryTable.name],
-        machineName = resultRow[IndustryTable.machineName],
-        createdAt = kotlinx.datetime.Instant.fromEpochMilliseconds(resultRow[IndustryTable.createdAt].toEpochMilli()),
-        updatedAt = kotlinx.datetime.Instant.fromEpochMilliseconds(resultRow[IndustryTable.updatedAt].toEpochMilli()),
-    )
-
-    fun insert(entity: IndustryEntity): IndustryEntity {
-        val id = table.insertAndGetId {
-            it[businessId] = entity.businessId
-            it[name] = entity.name
-            it[machineName] = entity.machineName
-            it[createdAt] = Instant.ofEpochMilli(entity.createdAt.toEpochMilliseconds())
-            it[updatedAt] = Instant.ofEpochMilli(entity.updatedAt.toEpochMilliseconds())
-        }
-        return findById(id.value)
-    }
-
-    fun update(id: Long, entity: IndustryEntity) {
-        table.update({ table.id eq id }, null, {
-            it[name] = entity.name
-            it[machineName] = entity.machineName
-            it[updatedAt] = Instant.ofEpochMilli(entity.updatedAt.toEpochMilliseconds())
-        })
-    }
-
-    fun delete(id: Long) {
-        table.deleteWhere {
-            table.id eq id
+    fun insert(_businessId: Long, entry: IndustryEntry): IndustryEntity {
+        return IndustryEntity.new {
+            businessId = _businessId
+            name = entry.name
+            machineName = entry.machineName
+            createdAt = Instant.now()
+            updatedAt = Instant.now()
         }
     }
 
-    fun findAll(): List<IndustryEntity> {
-        return table.selectAll().map { fromSqlResultRow(it) }
+    fun update(_businessId: Long, _id: Long, entry: IndustryEntry): IndustryEntity {
+        val entity = getById(_businessId, _id) ?: throw Error("Update industry failure, not found industry id=$_id")
+        entity.name = entry.name
+        entity.machineName = entry.name
+        entity.updatedAt = Instant.now()
+        return entity
+    }
+
+    fun delete(_businessId: Long, _id: Long) {
+        val entity = getById(_businessId, _id) ?: throw Error("Update industry failure, not found industry id=$_id")
+        entity.delete()
+    }
+
+    fun find(_businessId: Long): List<IndustryEntity> {
+        return IndustryEntity.find { (IndustryTable.businessId eq _businessId) }.toList()
     }
 }

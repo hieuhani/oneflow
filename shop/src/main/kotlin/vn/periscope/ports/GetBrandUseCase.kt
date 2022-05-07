@@ -1,4 +1,7 @@
 package vn.periscope.ports
 
-class GetBrandUseCase {
+import vn.periscope.core.domain.Brand
+
+interface GetBrandUseCase {
+    suspend fun getById(businessId: Long, id: Long): Brand
 }
