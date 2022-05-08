@@ -21,22 +21,23 @@ class ContentTypeFieldRoute(application: Application) {
     init {
         application.routing {
             get("/$RESOURCE") {
-                val resources = crudResourceUseCase.getAllResources()
-                call.respond(resources.map { ContentTypeFieldResponseDto.fromDomainModel(it) })
+                val request = ContentTypeFieldFilterRequest.fromParameters(call.request.queryParameters)
+                val pagedResource = crudResourceUseCase.filter(request.toDomainModel())
+                call.respond(ContentTypeFieldResponse.fromPagingDomainModel(pagedResource))
             }
 
             authenticate {
                 post("/$RESOURCE") {
                     val request: ContentTypeFieldRequestDto = call.receive()
                     val resource = crudResourceUseCase.create(request.toDomainModel())
-                    call.respond(ContentTypeFieldResponseDto.fromDomainModel(resource))
+                    call.respond(ContentTypeFieldResponse.fromDomainModel(resource))
                 }
 
                 put("/$RESOURCE/{id}") {
                     val id = call.longParameter("id")
                     val request: ContentTypeFieldRequestDto = call.receive()
                     val resource = crudResourceUseCase.update(id, request.toDomainModel())
-                    call.respond(ContentTypeFieldResponseDto.fromDomainModel(resource))
+                    call.respond(ContentTypeFieldResponse.fromDomainModel(resource))
                 }
 
                 delete("/$RESOURCE/id") {

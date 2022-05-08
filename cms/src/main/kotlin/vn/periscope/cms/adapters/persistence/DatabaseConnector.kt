@@ -33,7 +33,7 @@ class DatabaseConnector(
     init {
         runBlocking {
             transaction(db) {
-                SchemaUtils.create(*tables)
+                SchemaUtils.createMissingTablesAndColumns(*tables)
             }
         }
     }
