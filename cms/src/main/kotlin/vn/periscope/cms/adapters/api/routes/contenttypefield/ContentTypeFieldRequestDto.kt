@@ -1,7 +1,9 @@
 package vn.periscope.cms.adapters.api.routes.contenttypefield
 
 import kotlinx.serialization.Serializable
+import vn.periscope.cms.ports.contenttypefield.models.ContentTypeFieldCardinality
 import vn.periscope.cms.ports.contenttypefield.models.ContentTypeFieldEntry
+import vn.periscope.cms.ports.contenttypefield.models.ContentTypeFieldExtraData
 import vn.periscope.cms.ports.contenttypefield.models.ContentTypeFieldType
 
 @Serializable
@@ -11,7 +13,9 @@ data class ContentTypeFieldRequestDto(
     val order: Int,
     val required: Boolean,
     val type: ContentTypeFieldType,
+    val cardinality: ContentTypeFieldCardinality,
     val contentTypeId: Long,
+    val extraData: ContentTypeFieldExtraData?,
 ) {
     fun toDomainModel() = ContentTypeFieldEntry(
         id = null,
@@ -20,6 +24,8 @@ data class ContentTypeFieldRequestDto(
         order,
         required,
         type,
+        cardinality,
         contentTypeId,
+        extraData,
     )
 }

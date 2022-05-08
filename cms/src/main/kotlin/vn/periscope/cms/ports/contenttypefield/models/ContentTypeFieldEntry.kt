@@ -12,6 +12,11 @@ enum class ContentTypeFieldType {
     FILE,
 }
 
+enum class ContentTypeFieldCardinality {
+    ONE,
+    MANY,
+}
+
 data class ContentTypeFieldEntry(
     val id: Long? = null,
     val label: String,
@@ -19,5 +24,7 @@ data class ContentTypeFieldEntry(
     val order: Int,
     val required: Boolean,
     val type: ContentTypeFieldType,
+    val cardinality: ContentTypeFieldCardinality,
     val contentTypeId: Long,
+    val extraData: ContentTypeFieldExtraData? = null,
 )
