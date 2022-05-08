@@ -10,5 +10,6 @@ object ContentTypeFieldTable : LongIdTable("content_type_fields") {
     val order = integer("order").default(0)
     val required = bool("required").default(false)
     val type = enumerationByName("type", 20, ContentTypeFieldType::class).default(ContentTypeFieldType.UNSPECIFIED)
+    val cardinality = byte("cardinality")
     val contentTypeId = long("content_type_id").references(ContentTypeTable.id)
 }

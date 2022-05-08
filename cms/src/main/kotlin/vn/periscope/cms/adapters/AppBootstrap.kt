@@ -4,7 +4,8 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
-import io.ktor.server.plugins.*
+import io.ktor.server.plugins.callloging.*
+import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import org.slf4j.event.Level
 import vn.periscope.cms.extensions.inject

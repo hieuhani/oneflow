@@ -8,15 +8,18 @@ import vn.periscope.cms.ports.contenttype.models.ContentTypeFilterEntry
 data class ContentTypeFilterRequest(
     val limit: Int?,
     val offset: Int?,
+    val machineName: String?,
 ) {
     companion object {
         fun fromParameters(parameters: Parameters) = ContentTypeFilterRequest(
             limit = parameters["limit"]?.toIntOrNull(),
             offset = parameters["offset"]?.toIntOrNull(),
+            machineName = parameters["machineName"],
         )
     }
 
     fun toDomainModel() = ContentTypeFilterEntry(
+        machineName = machineName,
         limit = limit ?: 80,
         offset = offset ?: 0,
     )
