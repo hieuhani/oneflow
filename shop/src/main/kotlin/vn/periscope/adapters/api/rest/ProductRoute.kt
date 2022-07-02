@@ -15,9 +15,13 @@ import vn.periscope.extentions.inject
 import vn.periscope.ports.*
 import vn.periscope.ports.models.AttributeEntry
 import vn.periscope.ports.models.ProductEntry
+import vn.periscope.ports.models.audit.CreatedAt
+import vn.periscope.ports.models.audit.UpdatedAt
+import vn.periscope.ports.models.id.LongId
+import vn.periscope.ports.models.id.UUIDId
 import kotlin.streams.toList
 
-class ProductResource(application: Application) {
+class ProductRoute(application: Application) {
     private val getProductUseCase by inject<GetProductUseCase>()
     private val createProductUseCase by inject<CreateProductUseCase>()
     private val updateContentUseCase by inject<UpdateProductUseCase>()
@@ -37,8 +41,19 @@ class ProductResource(application: Application) {
                 post("/products") {
                     val request: CreateProductRequest = call.receive()
                     val businessId = call.longHeader(BUSINESS_ID_HEADER)
-                    val productEntry = toProductEntryForCreate(request)
-                    val product = createProductUseCase.create(businessId, productEntry)
+                    val product = ProductEntry(
+                        id = LongId.default(),
+                        type = request.type,
+                        name = ProductEntry.Name.of(request.name),
+                        photo = ProductEntry.Photo.of(request.photoId),
+                        brand = ProductEntry.Brand.of(request.brandId),
+                        industry = ProductEntry.Industry.of(request.industryId),
+                        categories = ProductEntry.CategoryCollection.of(request.categoryIds),
+                        price = ProductEntry.Price.of(request.price),
+                        createdAt = CreatedAt.now(),
+                        updatedAt = UpdatedAt.now(),
+                    )
+                    createProductUseCase.create(businessId, product)
                     call.respond(HttpStatusCode.Created, toProductResponse(product))
                 }
 
@@ -46,10 +61,7 @@ class ProductResource(application: Application) {
                     val id = call.longParameter("id")
                     val businessId = call.longHeader(BUSINESS_ID_HEADER)
                     val request: UpdateProductRequest = call.receive()
-                    val product = getProductUseCase.findById(businessId, id)
-                    val productEntry = product.toEntry()
-                    toProductEntryForUpdate(request, productEntry)
-                    updateContentUseCase.update(productEntry, product)
+                    val product = updateContentUseCase.update(businessId, id, request.toEntry())
                     call.respond(HttpStatusCode.OK, toProductResponse(product))
                 }
 
@@ -69,34 +81,7 @@ class ProductResource(application: Application) {
         }
     }
 
-    private fun toProductEntryForCreate(request: CreateProductRequest): ProductEntry {
-        val attributeEntries = toAttributeEntryForCreate(request.attributes)
-        return ProductEntry(
-            type = request.type,
-            name = request.name,
-            photoId = request.photoId ?: 0,
-            brandId = request.brandId ?: 0,
-            industryId = request.industryId ?: 0,
-            categoryIds = request.categoryIds ?: setOf(),
-            attributes = attributeEntries,
-        )
-    }
-
-    private fun toAttributeEntryForCreate(requests: List<CreateProductRequest.CreateAttributeRequest>?): List<AttributeEntry> {
-        if (requests.isNullOrEmpty()) return emptyList()
-        val entries = mutableListOf<AttributeEntry>()
-        for (request in requests) {
-            val entry = AttributeEntry(
-                name = request.name,
-                values = request.values
-            )
-            entries.add(entry)
-        }
-        return entries
-    }
-
     private fun toProductResponse(product: Product): ProductResponse {
-        val attributeResponses = product.attributes.stream().map { toAttributeResponse(it) }.toList()
         return ProductResponse(
             id = product.id,
             type = product.type,
@@ -105,12 +90,10 @@ class ProductResource(application: Application) {
             brandId = product.brandId,
             industryId = product.industryId,
             categoryIds = product.categoryIds,
-            attributes = attributeResponses,
             createdAt = product.createdAt,
             updatedAt = product.updatedAt,
         )
     }
-
 
     private fun toAttributeResponse(attribute: Attribute) = ProductAttributeResponse(
         id = attribute.id,
@@ -119,28 +102,4 @@ class ProductResource(application: Application) {
         createdAt = attribute.createdAt,
         updatedAt = attribute.updatedAt,
     )
-
-
-    private fun toProductEntryForUpdate(request: UpdateProductRequest, productEntry: ProductEntry) {
-        productEntry.name = request.name
-        productEntry.brandId = request.brandId ?: 0
-        productEntry.brandId = request.industryId ?: 0
-        productEntry.categoryIds = request.categoryIds ?: setOf()
-        val attributeEntries = toAttributeEntryForUpdate(request.attributes)
-        productEntry.attributes = attributeEntries
-    }
-
-    private fun toAttributeEntryForUpdate(requests: List<UpdateProductRequest.UpdateAttributeRequest>?): List<AttributeEntry> {
-        if (requests.isNullOrEmpty()) return emptyList()
-        val entries = mutableListOf<AttributeEntry>()
-        for (request in requests) {
-            val entry = AttributeEntry(
-                id = request.id,
-                name = request.name,
-                values = request.values
-            )
-            entries.add(entry)
-        }
-        return entries
-    }
 }

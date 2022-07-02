@@ -10,7 +10,7 @@ import kotlin.streams.toList
 
 class IndustryPersistence(
     private val industryRepository: IndustryRepository
-) : CreateIndustryEntryPoint, GetIndustryEntryPort, UpdateIndustryEntryPort, FindIndustryEntryPort,
+) : CreateIndustryEntryPort, GetIndustryEntryPort, UpdateIndustryEntryPort, FindIndustryEntryPort,
     DeleteIndustryEntryPort {
 
     override fun create(businessId: Long, entry: IndustryEntry): Industry {

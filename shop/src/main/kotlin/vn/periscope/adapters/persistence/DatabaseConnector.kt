@@ -24,17 +24,17 @@ class DatabaseConnector(
         BrandTable
     )
 
-    private val sequences = arrayOf(
-        ProductIdSequence.sequence,
-        AttributeIdSequence.sequence,
-        VariantIdSequence.sequence
-    )
+//    private val sequences = arrayOf(
+//        ProductIdSequence.sequence,
+//        AttributeIdSequence.sequence,
+//        VariantIdSequence.sequence
+//    )
 
     init {
         runBlocking {
             transaction(db) {
                 SchemaUtils.create(*tables)
-                SchemaUtils.createSequence(*sequences)
+//                SchemaUtils.createSequence(*sequences)
             }
         }
     }

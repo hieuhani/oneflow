@@ -14,7 +14,7 @@ import java.util.stream.Collectors
 import kotlin.streams.toList
 
 
-class FindPersistence(
+class FindProductPersistence(
     private val productRepository: ProductRepository,
     private val attributeRepository: AttributeRepository,
     private val productCategoryRepository: ProductCategoryRepository,
@@ -50,14 +50,13 @@ class FindPersistence(
             brandId = entity.brandId,
             categoryIds = categoryIds ?: setOf(),
             photoId = entity.photoId,
-            attributes = attributes ?: listOf(),
             industryId = entity.industryId,
             createdAt = entity.createdAt,
             updatedAt = entity.updatedAt,
         )
     }
 
-    private fun fetchAttributes(productIds: List<Long>): Map<Long, List<Attribute>> {
+    private fun fetchAttributes(productIds: List<Long>): Map<Long, List<AttributeEN>> {
         val attributeEntities = attributeRepository.findByReferIn(AttributeReferType.PRODUCT, productIds)
         val attributeIds = attributeEntities.stream().map { it.id }.toList()
 

@@ -7,7 +7,7 @@ import org.koin.dsl.binds
 import org.koin.dsl.module
 import vn.periscope.adapters.api.rest.BrandResource
 import vn.periscope.adapters.api.rest.IndustryResource
-import vn.periscope.adapters.api.rest.ProductResource
+import vn.periscope.adapters.api.rest.ProductRoute
 import vn.periscope.adapters.configs.DatabaseConfiguration
 import vn.periscope.adapters.persistence.*
 import vn.periscope.adapters.persistence.entity.*
@@ -76,7 +76,7 @@ val adapterModule = module(createdAtStart = true) {
         ProductCategoryRepository(table = get())
     }
 
-    single { ProductResource(application = get()) }
+    single { ProductRoute(application = get()) }
 
     single {
         BrandRepository
@@ -95,27 +95,13 @@ val adapterModule = module(createdAtStart = true) {
     }
 
     single {
-        CreateProductPersistence(
+        ProductPersistence(
             productRepository = get(),
-            attributeRepository = get(),
-            productCategoryRepository = get(),
-            attributeValueRepository = get()
+            productCategoryRepository = get()
         )
     } binds arrayOf(
         CreateProductEntryPort::class,
     )
-
-    single {
-        GetProductPersistence(
-            productRepository = get(),
-            attributeRepository = get(),
-            idProviderRepository = get(),
-            productCategoryRepository = get(),
-            attributeValueRepository = get()
-        )
-    } bind (
-            GetProductEntryPort::class
-            )
 
     single {
         DeleteProductPersistence(
@@ -131,11 +117,11 @@ val adapterModule = module(createdAtStart = true) {
             idProviderRepository = get()
         )
     } bind (
-            GetAttributeEntryPoint::class
+            GetAttributeEntryPort::class
             )
 
     single {
-        FindPersistence(
+        FindProductPersistence(
             productRepository = get(),
             attributeRepository = get(),
             productCategoryRepository = get(),
@@ -168,7 +154,7 @@ val adapterModule = module(createdAtStart = true) {
             industryRepository = get(),
         )
     } binds arrayOf(
-        CreateIndustryEntryPoint::class,
+        CreateIndustryEntryPort::class,
         GetIndustryEntryPort::class,
         UpdateIndustryEntryPort::class,
         DeleteIndustryEntryPort::class,

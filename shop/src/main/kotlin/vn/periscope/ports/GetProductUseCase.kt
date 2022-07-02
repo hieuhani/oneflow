@@ -1,7 +1,7 @@
 package vn.periscope.ports
 
-import vn.periscope.core.domain.Product
+import vn.periscope.ports.models.ProductEntry
 
 interface GetProductUseCase {
-    suspend fun findById(businessId: Long, id: Long): Product
+    suspend fun getById(businessId: Long, id: Long): ProductEntry
 }

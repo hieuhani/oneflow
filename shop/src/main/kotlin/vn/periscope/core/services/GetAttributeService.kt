@@ -1,12 +1,12 @@
 package vn.periscope.core.services
 
 import vn.periscope.ports.GetAttributeUseCase
-import vn.periscope.ports.out.GetAttributeEntryPoint
+import vn.periscope.ports.out.GetAttributeEntryPort
 
 class GetAttributeService(
-    private val getAttributeEntryPoint: GetAttributeEntryPoint
+    private val getAttributeEntryPort: GetAttributeEntryPort
 ) : GetAttributeUseCase{
     override fun getNextSeriesIds(quantity: Int): Set<Long> {
-        return getAttributeEntryPoint.getNextSeriesIds(quantity)
+        return getAttributeEntryPort.getNextSeriesIds(quantity)
     }
 }

@@ -1,8 +1,10 @@
 package vn.periscope.adapters.persistence.entity
 
-import org.jetbrains.exposed.dao.id.LongIdTable
+import org.jetbrains.exposed.sql.Table
 
-object AttributeValueTable : LongIdTable("attribute_value") {
-    var attributeId = long("attribute_id").index()
-    var value = varchar("value", 64)
+object AttributeValueTable : Table("attribute_value") {
+    val attributeId = long("attribute_id").index()
+    val value = varchar("value", 64).index()
+
+    override val primaryKey = PrimaryKey(attributeId, value)
 }

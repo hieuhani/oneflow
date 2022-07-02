@@ -1,42 +1,42 @@
 package vn.periscope.adapters.persistence.repository
 
-import org.jetbrains.exposed.sql.*
-import vn.periscope.adapters.persistence.entity.AttributeTable
+import org.jetbrains.exposed.sql.and
 import vn.periscope.adapters.persistence.entity.ProductCategoryEntity
 import vn.periscope.adapters.persistence.entity.ProductCategoryTable
 import java.time.Instant
 
-class ProductCategoryRepository(
-    private val table: ProductCategoryTable
-) {
-    fun insert(entity: ProductCategoryEntity) {
-        table.insert {
-            it[productId] = entity.productId
-            it[categoryId] = entity.categoryId
-            it[createdAt] = Instant.ofEpochMilli(entity.createdAt.toEpochMilliseconds())
+object ProductCategoryRepository {
+    fun insert(_productId: Long, _categoryId: Long): ProductCategoryEntity {
+        return ProductCategoryEntity.new {
+            productId = _productId
+            categoryId = _categoryId
+            createdAt = Instant.now()
         }
     }
 
-    fun batchInsert(entities: List<ProductCategoryEntity>) {
-        table.batchInsert(entities) { entity ->
-            this[ProductCategoryTable.productId] = entity.productId
-            this[ProductCategoryTable.categoryId] = entity.categoryId
-            this[ProductCategoryTable.createdAt] = Instant.ofEpochMilli(entity.createdAt.toEpochMilliseconds())
-        }
+    fun batchInsert(_productId: Long, _categoryIds: Set<Long>) {
+        _categoryIds.forEach { insert(_productId, it) }
     }
 
-    private fun fromSqlResultRow(resultRow: ResultRow) = ProductCategoryEntity(
-        id = resultRow[ProductCategoryTable.id].value,
-        productId = resultRow[ProductCategoryTable.productId],
-        categoryId = resultRow[ProductCategoryTable.categoryId],
-        createdAt = kotlinx.datetime.Instant.fromEpochMilliseconds(resultRow[AttributeTable.createdAt].toEpochMilli()),
-    )
+    fun delete(_productId: Long, _categoryId: Long) {
+        val entity = findByFK(_productId, _categoryId) ?: return
+        entity.delete()
+    }
+
+    fun batchDelete(_productId: Long, _categoryIds: Set<Long>) {
+        _categoryIds.forEach { delete(_productId, it) }
+    }
+
+    fun findByFK(_productId: Long, _categoryId: Long): ProductCategoryEntity? {
+        return ProductCategoryEntity.find() { (ProductCategoryTable.productId eq _productId) and (ProductCategoryTable.categoryId eq _categoryId) }
+            .firstOrNull()
+    }
+
+    fun findByProductIdIn(productIds: Set<Long>): List<ProductCategoryEntity> {
+        return ProductCategoryEntity.find { ProductCategoryTable.productId inList productIds }.toList()
+    }
 
     fun findByProductId(productId: Long): List<ProductCategoryEntity> {
-        return table.select { table.productId eq productId}.map { fromSqlResultRow(it) }
-    }
-
-    fun findByProductIdIn(productIds: List<Long>): List<ProductCategoryEntity> {
-        return table.select { table.productId inList productIds }.map { fromSqlResultRow(it) }
+        return ProductCategoryEntity.find { ProductCategoryTable.productId eq productId }.toList()
     }
 }

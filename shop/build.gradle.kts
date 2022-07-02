@@ -50,4 +50,6 @@ dependencies {
 
     implementation("org.postgresql:postgresql:$postgresql_version")
     implementation("com.zaxxer:HikariCP:$hikaricp_version")
+    implementation("org.valiktor:valiktor-core:0.12.0")
+
 }

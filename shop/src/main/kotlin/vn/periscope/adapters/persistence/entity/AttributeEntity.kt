@@ -1,16 +1,14 @@
 package vn.periscope.adapters.persistence.entity
 
 import kotlinx.datetime.Instant
-import vn.periscope.share.statics.AttributeReferType
 import java.util.*
 
 data class AttributeEntity(
-    val id: Long,
+    val id: Long = 0,
     val businessId: Long,
-    val referType: AttributeReferType,
-    val referId: Long,
+    val ownerNid: UUID,
     val name: String,
+    val values: Set<String>,
     val createdAt: Instant,
     val updatedAt: Instant,
-    val nid: UUID,
 )

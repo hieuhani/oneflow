@@ -1,7 +1,6 @@
 package vn.periscope.adapters.persistence.repository
 
 import org.jetbrains.exposed.sql.*
-import vn.periscope.adapters.persistence.entity.AttributeValueEntity
 import vn.periscope.adapters.persistence.entity.AttributeValueTable
 
 class AttributeValueRepository(

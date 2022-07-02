@@ -1,7 +1,7 @@
 package vn.periscope.ports.out
 
-import vn.periscope.core.domain.Product
+import vn.periscope.ports.models.ProductEntry
 
 interface CreateProductEntryPort {
-    fun insert(businessId: Long, product: Product)
+    fun create(businessId: Long, entry: ProductEntry)
 }

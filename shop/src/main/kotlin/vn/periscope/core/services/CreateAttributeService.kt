@@ -4,16 +4,19 @@ import kotlinx.datetime.Clock
 import vn.periscope.core.domain.Attribute
 import vn.periscope.ports.CreateAttributeUseCase
 import vn.periscope.ports.models.AttributeEntry
-import vn.periscope.ports.out.GetAttributeEntryPoint
+import vn.periscope.ports.out.CreateAttributeEntryPort
+import vn.periscope.ports.out.GetAttributeEntryPort
 
 class CreateAttributeService(
-    private val getAttributeEntryPoint: GetAttributeEntryPoint
+    private val getAttributeEntryPort: GetAttributeEntryPort,
+    private val createAttributeEntryPoint: CreateAttributeEntryPort,
 ) : CreateAttributeUseCase {
-    override fun create(entries: List<AttributeEntry>): List<Attribute> {
-        val ids = getAttributeEntryPoint.getNextSeriesIds(entries.size)
-        val galleries = mutableListOf<Attribute>()
+    override fun create(businessId: Long, referId: Long, entries: List<AttributeEntry>): List<Attribute> {
+        if (entries.isEmpty()) return listOf()
+        val ids = getAttributeEntryPort.getNextSeriesIds(entries.size)
+        val attributes = mutableListOf<Attribute>()
         entries.forEachIndexed { index, attributeEntry ->
-            galleries.add(
+            attributes.add(
                 Attribute(
                     id = ids.toMutableList()[index],
                     name = attributeEntry.name,
@@ -23,6 +26,7 @@ class CreateAttributeService(
                 )
             )
         }
-        return galleries
+        createAttributeEntryPoint.create(businessId, referId, attributes)
+        return attributes
     }
 }

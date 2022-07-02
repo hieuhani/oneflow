@@ -1,10 +1,10 @@
 package vn.periscope.ports.out
 
-import vn.periscope.core.domain.Product
+import vn.periscope.ports.models.ProductEntry
 
 interface GetProductEntryPort {
 
     fun getNextSeriesId(): Long
 
-    fun findById(id: Long, businessId : Long): Product?
+    fun getById(businessId : Long, id: Long): ProductEntry
 }
